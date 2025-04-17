@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import DashboardLayout from './components/dashboard-layout'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Financial Dashboard',
+  description: 'A modern financial dashboard for warranty and invoice management',
 }
 
 export default function RootLayout({
@@ -14,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <DashboardLayout>{children}</DashboardLayout>
+      </body>
     </html>
   )
 }
