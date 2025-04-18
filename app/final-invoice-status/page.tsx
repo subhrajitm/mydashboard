@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
-import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc, X, ChevronRight, ChevronLeft, ArrowUpDown, Eye, Check, ChevronsUpDown } from "lucide-react"
+import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc, X, ChevronRight, ChevronLeft, ArrowUpDown, Eye, Check, ChevronsUpDown, DollarSign } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -20,7 +20,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip as RechartsTooltip,
+  Tooltip,
   Legend,
   ResponsiveContainer,
   PieChart,
@@ -350,6 +350,52 @@ export default function FinalInvoiceStatus() {
   const [activeTable, setActiveTable] = useState<'invoice' | 'warranty' | 'opportunity' | 'recommendations' | 'priority'>('invoice')
   const [selectedShop, setSelectedShop] = useState<string | null>(null)
 
+  // Summary statistics
+  const summaryStats = [
+    {
+      title: "Total Warranty Claims",
+      value: "24",
+      change: "+12%",
+      trend: "up",
+      icon: FileText,
+      color: "text-blue-500"
+    },
+    {
+      title: "Active Opportunities",
+      value: "8",
+      change: "+5%",
+      trend: "up",
+      icon: TrendingUp,
+      color: "text-green-500"
+    },
+    {
+      title: "Pending Assessments",
+      value: "5",
+      change: "-2%",
+      trend: "down",
+      icon: Clock,
+      color: "text-yellow-500"
+    },
+    {
+      title: "Total Amount",
+      value: "$1,458,088",
+      change: "+8%",
+      trend: "up",
+      icon: DollarSign,
+      color: "text-purple-500"
+    }
+  ]
+
+  // Chart data
+  const chartData = [
+    { name: "Jan", claims: 4, opportunities: 2 },
+    { name: "Feb", claims: 6, opportunities: 3 },
+    { name: "Mar", claims: 8, opportunities: 5 },
+    { name: "Apr", claims: 5, opportunities: 4 },
+    { name: "May", claims: 7, opportunities: 6 },
+    { name: "Jun", claims: 9, opportunities: 8 }
+  ]
+
   const steps = [
     { id: 'invoice', label: 'Invoice Status', description: 'View and manage invoice statuses' },
     { id: 'warranty', label: 'Warranty Claims', description: 'Review warranty claims' },
@@ -609,6 +655,32 @@ export default function FinalInvoiceStatus() {
           </div>
         </div>
       </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {summaryStats.map((stat, index) => (
+          <Card key={index} className="backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{stat.title}</p>
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-2xl font-bold">{stat.value}</h3>
+                    <span className={`text-sm font-medium ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                      {stat.change}
+                    </span>
+                  </div>
+                </div>
+                <div className={`p-3 rounded-full bg-white/10 dark:bg-gray-800/10 ${stat.color}`}>
+                  <stat.icon className="h-6 w-6" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+     
 
       {/* Steps Navigation */}
       <div className="relative">
