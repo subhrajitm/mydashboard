@@ -30,7 +30,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   Tooltip,
   TooltipContent,
@@ -157,337 +157,346 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export default function Dashboard() {
-  const [activeTimeframe, setActiveTimeframe] = useState("1w")
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
-  const [activeNavItem, setActiveNavItem] = useState("home")
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const navItems = [
-    { id: "home", icon: Home, label: "Home" },
-    { id: "messages", icon: MessageSquare, label: "Messages", badge: 3 },
-    { id: "profile", icon: User, label: "Profile" },
-    { id: "cards", icon: CreditCard, label: "Cards" },
-    { id: "settings", icon: Settings, label: "Settings" },
-  ]
+  // Memoize data preparation functions
+  const shopChartData = useMemo(() => prepareShopChartData(), [])
+  const warrantyChartData = useMemo(() => prepareWarrantyChartData(), [])
+  const creditChartData = useMemo(() => prepareCreditChartData(), [])
 
-  const themeColors = {
-    dark: {
-      background: '#181C23',
-      sidebar: '#282A27',
-      text: '#FFFFFF',
-      accent: '#FF4F59',
-      secondary: '#FFAD28',
-      hover: '#444744',
-      card: '#1E2229',
-    },
-    light: {
-      background: '#FFFAF4',
-      sidebar: '#FFF2DF',
-      text: '#181C23',
-      accent: '#FF4F59',
-      secondary: '#FFAD28',
-      hover: '#444744',
-      card: '#FFFFFF',
-    }
+  // Memoize total engines calculation
+  const totalEngines = useMemo(() => getTotalEngines(), [])
+
+  // Simulate data loading
+  useEffect(() => {
+    setIsLoading(true)
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+  }, [])
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Card className="p-6">
+          <div className="flex flex-col items-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-[#FF4F59]" />
+            <h2 className="text-2xl font-bold">Error Loading Dashboard</h2>
+            <p className="text-muted-foreground">{error}</p>
+            <Button onClick={() => setError(null)}>Try Again</Button>
+          </div>
+        </Card>
+      </div>
+    )
   }
 
-  const currentTheme = isDarkMode ? themeColors.dark : themeColors.light
-
   return (
-    <div className="space-y-8">
-      {/* Welcome Section */}
-      <div className="flex flex-col space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-          Welcome back, Oliver!
-        </h1>
-        <p className="text-lg" style={{ color: isDarkMode ? '#A1A1AA' : '#6B7280' }}>
-          Here's what's happening with your finances today
-        </p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {invoiceData.map((shop) => (
-          <Card key={shop.shop} className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b border-[#FF4F59]/20">
-              <CardTitle className="text-sm font-medium">
-                {shop.shop}
-              </CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold">{shop.engines}</div>
-              <div className="flex items-center text-xs text-muted-foreground mt-2">
-                <div className="flex-1">
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 rounded-full bg-[#FF4F59] mr-2" />
-                    <span>Due: {shop.due}</span>
-                  </div>
-                  <div className="flex items-center mt-1">
-                    <div className="w-2 h-2 rounded-full bg-[#FFAD28] mr-2" />
-                    <span>Issued: {shop.issued}</span>
-                  </div>
-                </div>
-                <Badge variant="outline" className="ml-2">
-                  {getPercentage(shop.engines)}%
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-          <CardHeader className="border-b border-[#FF4F59]/20">
-            <CardTitle className="flex items-center">
-              <Building2 className="h-5 w-5 mr-2" />
-              Shop Performance
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={prepareShopChartData()}>
-                <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fill: COLORS.text }}
-                  axisLine={{ stroke: COLORS.text }}
-                />
-                <YAxis 
-                  tick={{ fill: COLORS.text }}
-                  axisLine={{ stroke: COLORS.text }}
-                />
-                <RechartsTooltip content={<CustomTooltip />} />
-                <Legend 
-                  verticalAlign="top" 
-                  height={36}
-                  formatter={(value) => (
-                    <span className="text-sm" style={{ color: COLORS.text }}>
-                      {value}
-                    </span>
-                  )}
-                />
-                <Bar 
-                  dataKey="engines" 
-                  fill={COLORS.primary} 
-                  name="Total Engines"
-                  radius={[4, 4, 0, 0]}
-                  animationDuration={1500}
-                />
-                <Bar 
-                  dataKey="due" 
-                  fill={COLORS.secondary} 
-                  name="Due"
-                  radius={[4, 4, 0, 0]}
-                  animationDuration={1500}
-                />
-                <Bar 
-                  dataKey="issued" 
-                  fill={COLORS.tertiary} 
-                  name="Issued"
-                  radius={[4, 4, 0, 0]}
-                  animationDuration={1500}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-          <CardHeader className="border-b border-[#FF4F59]/20">
-            <CardTitle className="flex items-center">
-              <ClipboardCheck className="h-5 w-5 mr-2" />
-              Warranty Progress
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={prepareWarrantyChartData()}>
-                <defs>
-                  <linearGradient id="colorToBeAssessed" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorInProgress" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLORS.secondary} stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor={COLORS.secondary} stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fill: COLORS.text }}
-                  axisLine={{ stroke: COLORS.text }}
-                />
-                <YAxis 
-                  tick={{ fill: COLORS.text }}
-                  axisLine={{ stroke: COLORS.text }}
-                />
-                <RechartsTooltip content={<CustomTooltip />} />
-                <Legend 
-                  verticalAlign="top" 
-                  height={36}
-                  formatter={(value) => (
-                    <span className="text-sm" style={{ color: COLORS.text }}>
-                      {value}
-                    </span>
-                  )}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="toBeAssessed" 
-                  stroke={COLORS.primary}
-                  fillOpacity={1} 
-                  fill="url(#colorToBeAssessed)"
-                  name="To Be Assessed"
-                  animationDuration={1500}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="inProgress" 
-                  stroke={COLORS.secondary}
-                  fillOpacity={1} 
-                  fill="url(#colorInProgress)"
-                  name="In Progress"
-                  animationDuration={1500}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Credit Metrics */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <CreditCard className="h-5 w-5 mr-2" />
-            Credit Metrics Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={prepareCreditChartData()}>
-              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fill: COLORS.text }}
-                axisLine={{ stroke: COLORS.text }}
-              />
-              <YAxis 
-                tick={{ fill: COLORS.text }}
-                axisLine={{ stroke: COLORS.text }}
-              />
-              <RechartsTooltip content={<CustomTooltip />} />
-              <Legend 
-                verticalAlign="top" 
-                height={36}
-                formatter={(value) => (
-                  <span className="text-sm" style={{ color: COLORS.text }}>
-                    {value}
-                  </span>
-                )}
-              />
-              <Bar 
-                dataKey="creditsPaid" 
-                fill={COLORS.primary} 
-                name="Credits Paid"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-              <Bar 
-                dataKey="disallowedAmount" 
-                fill={COLORS.secondary} 
-                name="Disallowed Amount"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* Warranty Status */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <ClipboardCheck className="h-5 w-5 mr-2" />
-            Warranty Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            {warrantyData.map((shop) => (
-              <div key={shop.shop} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{shop.shop}</span>
-                  <div className="flex space-x-2">
-                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                      {shop.toBeAssessed} To Assess
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#FFAD28]/10 text-[#FFAD28]">
-                      {shop.inProgress} In Progress
-                    </Badge>
-                  </div>
-                </div>
-                <Progress 
-                  value={(shop.toBeAssessed + shop.inProgress) * 10} 
-                  className="h-2"
-                />
-              </div>
-            ))}
+    <div className="flex-1">
+      <div className="p-8 space-y-8">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF4F59]"></div>
           </div>
-        </CardContent>
-      </Card>
+        ) : (
+          <>
+            {/* Welcome Section */}
+            <div className="flex flex-col space-y-4">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                Welcome back, Oliver!
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Here's what's happening with your finances today
+              </p>
+            </div>
 
-      {/* Recent Activity */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Clock className="h-5 w-5 mr-2" />
-            Recent Activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {creditMetrics.slice(0, 5).map((metric) => (
-              <div key={metric.model} className="flex items-center justify-between p-4 rounded-lg hover:bg-[#444744]/5 transition-colors duration-200">
-                <div className="flex items-center space-x-4">
-                  <div className="p-2 rounded-lg bg-[#FF4F59]/10">
-                    <CreditCard className="h-5 w-5 text-[#FF4F59]" />
-                  </div>
-                  <div>
-                    <div className="font-medium">{metric.model}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Credits processed
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {invoiceData.map((shop) => (
+                <Card key={shop.shop} className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b border-[#FF4F59]/20">
+                    <CardTitle className="text-sm font-medium">
+                      {shop.shop}
+                    </CardTitle>
+                    <Building2 className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="text-2xl font-bold">{shop.engines}</div>
+                    <div className="flex items-center text-xs text-muted-foreground mt-2">
+                      <div className="flex-1">
+                        <div className="flex items-center">
+                          <div className="w-2 h-2 rounded-full bg-[#FF4F59] mr-2" />
+                          <span>Due: {shop.due}</span>
+                        </div>
+                        <div className="flex items-center mt-1">
+                          <div className="w-2 h-2 rounded-full bg-[#FFAD28] mr-2" />
+                          <span>Issued: {shop.issued}</span>
+                        </div>
+                      </div>
+                      <Badge variant="outline" className="ml-2">
+                        {getPercentage(shop.engines)}%
+                      </Badge>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <CardHeader className="border-b border-[#FF4F59]/20">
+                  <CardTitle className="flex items-center">
+                    <Building2 className="h-5 w-5 mr-2" />
+                    Shop Performance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={shopChartData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+                      <XAxis 
+                        dataKey="name" 
+                        tick={{ fill: COLORS.text }}
+                        axisLine={{ stroke: COLORS.text }}
+                      />
+                      <YAxis 
+                        tick={{ fill: COLORS.text }}
+                        axisLine={{ stroke: COLORS.text }}
+                      />
+                      <RechartsTooltip content={<CustomTooltip />} />
+                      <Legend 
+                        verticalAlign="top" 
+                        height={36}
+                        formatter={(value) => (
+                          <span className="text-sm" style={{ color: COLORS.text }}>
+                            {value}
+                          </span>
+                        )}
+                      />
+                      <Bar 
+                        dataKey="engines" 
+                        fill={COLORS.primary} 
+                        name="Total Engines"
+                        radius={[4, 4, 0, 0]}
+                        animationDuration={1500}
+                      />
+                      <Bar 
+                        dataKey="due" 
+                        fill={COLORS.secondary} 
+                        name="Due"
+                        radius={[4, 4, 0, 0]}
+                        animationDuration={1500}
+                      />
+                      <Bar 
+                        dataKey="issued" 
+                        fill={COLORS.tertiary} 
+                        name="Issued"
+                        radius={[4, 4, 0, 0]}
+                        animationDuration={1500}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+                <CardHeader className="border-b border-[#FF4F59]/20">
+                  <CardTitle className="flex items-center">
+                    <ClipboardCheck className="h-5 w-5 mr-2" />
+                    Warranty Progress
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={warrantyChartData}>
+                      <defs>
+                        <linearGradient id="colorToBeAssessed" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorInProgress" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.secondary} stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor={COLORS.secondary} stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+                      <XAxis 
+                        dataKey="name" 
+                        tick={{ fill: COLORS.text }}
+                        axisLine={{ stroke: COLORS.text }}
+                      />
+                      <YAxis 
+                        tick={{ fill: COLORS.text }}
+                        axisLine={{ stroke: COLORS.text }}
+                      />
+                      <RechartsTooltip content={<CustomTooltip />} />
+                      <Legend 
+                        verticalAlign="top" 
+                        height={36}
+                        formatter={(value) => (
+                          <span className="text-sm" style={{ color: COLORS.text }}>
+                            {value}
+                          </span>
+                        )}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="toBeAssessed" 
+                        stroke={COLORS.primary}
+                        fillOpacity={1} 
+                        fill="url(#colorToBeAssessed)"
+                        name="To Be Assessed"
+                        animationDuration={1500}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="inProgress" 
+                        stroke={COLORS.secondary}
+                        fillOpacity={1} 
+                        fill="url(#colorInProgress)"
+                        name="In Progress"
+                        animationDuration={1500}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Credit Metrics */}
+            <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+              <CardHeader className="border-b border-[#FF4F59]/20">
+                <CardTitle className="flex items-center">
+                  <CreditCard className="h-5 w-5 mr-2" />
+                  Credit Metrics Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={creditChartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+                    <XAxis 
+                      dataKey="name" 
+                      tick={{ fill: COLORS.text }}
+                      axisLine={{ stroke: COLORS.text }}
+                    />
+                    <YAxis 
+                      tick={{ fill: COLORS.text }}
+                      axisLine={{ stroke: COLORS.text }}
+                    />
+                    <RechartsTooltip content={<CustomTooltip />} />
+                    <Legend 
+                      verticalAlign="top" 
+                      height={36}
+                      formatter={(value) => (
+                        <span className="text-sm" style={{ color: COLORS.text }}>
+                          {value}
+                        </span>
+                      )}
+                    />
+                    <Bar 
+                      dataKey="creditsPaid" 
+                      fill={COLORS.primary} 
+                      name="Credits Paid"
+                      radius={[4, 4, 0, 0]}
+                      animationDuration={1500}
+                    />
+                    <Bar 
+                      dataKey="disallowedAmount" 
+                      fill={COLORS.secondary} 
+                      name="Disallowed Amount"
+                      radius={[4, 4, 0, 0]}
+                      animationDuration={1500}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Warranty Status */}
+            <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+              <CardHeader className="border-b border-[#FF4F59]/20">
+                <CardTitle className="flex items-center">
+                  <ClipboardCheck className="h-5 w-5 mr-2" />
+                  Warranty Status
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  {warrantyData.map((shop) => (
+                    <div key={shop.shop} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">{shop.shop}</span>
+                        <div className="flex space-x-2">
+                          <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                            {shop.toBeAssessed} To Assess
+                          </Badge>
+                          <Badge variant="secondary" className="bg-[#FFAD28]/10 text-[#FFAD28]">
+                            {shop.inProgress} In Progress
+                          </Badge>
+                        </div>
+                      </div>
+                      <Progress 
+                        value={(shop.toBeAssessed + shop.inProgress) * 10} 
+                        className="h-2"
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <div className="font-medium text-[#FF4F59]">
-                      {metric.creditsPaid}
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Clock className="h-5 w-5 mr-2" />
+                  Recent Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {creditMetrics.slice(0, 5).map((metric) => (
+                    <div key={metric.model} className="flex items-center justify-between p-4 rounded-lg hover:bg-[#444744]/5 transition-colors duration-200">
+                      <div className="flex items-center space-x-4">
+                        <div className="p-2 rounded-lg bg-[#FF4F59]/10">
+                          <CreditCard className="h-5 w-5 text-[#FF4F59]" />
+                        </div>
+                        <div>
+                          <div className="font-medium">{metric.model}</div>
+                          <div className="text-sm text-muted-foreground">
+                            Credits processed
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <div className="text-right">
+                          <div className="font-medium text-[#FF4F59]">
+                            {metric.creditsPaid}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Credits Paid
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium text-[#FFAD28]">
+                            {metric.disallowedAmount}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Disallowed
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      Credits Paid
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium text-[#FFAD28]">
-                      {metric.disallowedAmount}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Disallowed
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              </CardContent>
+            </Card>
+          </>
+        )}
+      </div>
     </div>
   )
 }
