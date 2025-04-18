@@ -1,6 +1,6 @@
 "use client"
 
-import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc } from "lucide-react"
+import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc, X } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -118,14 +118,28 @@ export default function FinalInvoiceStatusPage() {
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
+              </div>
               <Input
                 placeholder="Search invoices..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40"
+                className="w-72 pl-10 pr-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
               />
+              {searchQuery && (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:bg-[#FF4F59]/10"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <X className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2">
               {["All", "Due", "Issued", "Upcoming"].map((status) => (
