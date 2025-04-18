@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'Financial Dashboard',
+  title: 'WCA Dashboard',
   description: 'A modern financial dashboard for managing warranty metrics and invoices',
 }
 

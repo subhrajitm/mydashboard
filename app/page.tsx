@@ -103,9 +103,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="relative">
+      <div className="relative rounded-2xl overflow-hidden">
         {/* Decorative background elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 -z-10">
           {/* Gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#FF4F59]/5 via-[#FFAD28]/5 to-transparent" />
           
@@ -117,7 +117,7 @@ export default function DashboardPage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-10" />
         </div>
 
-        <div className="flex flex-col space-y-4 p-6 rounded-2xl bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+        <div className="flex flex-col space-y-4 p-6 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] via-[#FFAD28] to-[#4F46E5] bg-clip-text text-transparent">
@@ -128,11 +128,11 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" className="bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10">
+              <Button variant="outline" className="bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-2xl">
                 <Calendar className="h-4 w-4 mr-2" />
                 Last 30 Days
               </Button>
-              <Button variant="outline" className="bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10">
+              <Button variant="outline" className="bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-2xl">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter View
               </Button>

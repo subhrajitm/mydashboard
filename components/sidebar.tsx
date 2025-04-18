@@ -24,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useTheme } from "next-themes"
+import Image from "next/image"
 
 const navItems = [
   { 
@@ -50,6 +51,7 @@ const navItems = [
     label: "Notifications", 
     href: "/notifications",
     badge: 5,
+    showBadgeInCompact: true,
   },
   { 
     id: "settings", 
@@ -105,18 +107,26 @@ export default function Sidebar() {
       {/* Sidebar Header */}
       <div className="flex items-center justify-between p-4 border-b border-white/10 dark:border-gray-700/10">
         <div className="flex items-center space-x-3">
-          <div className="relative h-8 w-8">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] rounded-lg" />
-            <div className="absolute inset-[1px] bg-white dark:bg-gray-900 rounded-lg flex items-center justify-center">
-              <span className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-                FD
-              </span>
+          {isExpanded ? (
+            <div className="relative h-[50px] w-32">
+              <Image
+                src="/genpact-logo.svg"
+                alt="Genpact Logo"
+                fill
+                className="object-contain dark:filter-none filter invert"
+                priority
+              />
             </div>
-          </div>
-          {isExpanded && (
-            <h2 className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-              Dashboard
-            </h2>
+          ) : (
+            <div className="relative h-[50px] w-[50px]">
+              <Image
+                src="/genpact-logo-m.svg"
+                alt="Genpact Logo"
+                fill
+                className="object-contain dark:filter-none filter invert"
+                priority
+              />
+            </div>
           )}
         </div>
         <Button
@@ -160,13 +170,21 @@ export default function Sidebar() {
                     role="menuitem"
                     aria-current={pathname === item.href ? "page" : undefined}
                   >
-                    <item.icon className="h-5 w-5" aria-hidden="true" />
+                    <div className="relative">
+                      <item.icon className="h-5 w-5" aria-hidden="true" />
+                      {item.badge && (isExpanded || item.showBadgeInCompact) && (
+                        <Badge 
+                          variant="secondary" 
+                          className={cn(
+                            "absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]",
+                            !isExpanded && "translate-x-1/2"
+                          )}
+                        >
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </div>
                     {isExpanded && <span>{item.label}</span>}
-                    {item.badge && (
-                      <Badge variant="secondary" className="ml-auto">
-                        {item.badge}
-                      </Badge>
-                    )}
                   </Button>
                 </Link>
               </TooltipTrigger>
