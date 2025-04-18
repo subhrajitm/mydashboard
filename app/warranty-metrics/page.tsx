@@ -66,6 +66,10 @@ interface WarrantyStat {
   value: string
   description: string
   icon: React.ElementType
+  trend: string
+  trendDirection: string
+  color: string
+  bgColor: string
 }
 
 const warrantyData: WarrantyData[] = [
@@ -93,27 +97,43 @@ const monthlyData = [
 const warrantyStats: WarrantyStat[] = [
   {
     title: "Total Claims",
-    value: "40",
+    value: "220",
     description: "Across all shops",
     icon: ClipboardCheck,
+    trend: "+12%",
+    trendDirection: "up",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10"
   },
   {
     title: "Approved",
-    value: "45",
+    value: "150",
     description: "Successfully processed",
     icon: CheckCircle,
+    trend: "+8%",
+    trendDirection: "up",
+    color: "text-green-500",
+    bgColor: "bg-green-500/10"
   },
   {
     title: "Pending",
-    value: "19",
+    value: "45",
     description: "Under review",
     icon: Clock,
+    trend: "-3%",
+    trendDirection: "down",
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-500/10"
   },
   {
     title: "Rejected",
-    value: "8",
+    value: "25",
     description: "Not eligible",
     icon: XCircle,
+    trend: "+2%",
+    trendDirection: "up",
+    color: "text-red-500",
+    bgColor: "bg-red-500/10"
   },
 ]
 
@@ -249,18 +269,28 @@ export default function WarrantyMetrics() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {warrantyStats.map((stat) => (
-              <Card key={stat.title} className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5 hover:shadow-xl transition-all duration-300 hover:bg-white/30 dark:hover:bg-gray-900/30">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
-                  <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                  <stat.icon className="h-3 w-3 text-muted-foreground" />
-                </CardHeader>
-                <CardContent className="pt-1">
-                  <div className="text-xl font-bold">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground">{stat.description}</p>
-                  <Progress value={75} className="mt-1 bg-white/20" />
+          {/* Summary Cards */}
+          <div className="grid grid-cols-4 gap-4">
+            {warrantyStats.map((stat, index) => (
+              <Card key={index} className="backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{stat.title}</p>
+                      <div className="flex items-baseline gap-2">
+                        <h3 className="text-lg font-bold">{stat.value}</h3>
+                        <span className={`text-xs font-medium ${stat.trendDirection === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                          {stat.trend}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={`p-2 rounded-full ${stat.bgColor} ${stat.color}`}>
+                      <stat.icon className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <p className="text-xs text-muted-foreground">{stat.description}</p>
+                  </div>
                 </CardContent>
               </Card>
             ))}
