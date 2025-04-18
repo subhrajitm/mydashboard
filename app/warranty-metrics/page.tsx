@@ -17,6 +17,7 @@ import {
   ClipboardCheck,
   TrendingUp,
   TrendingDown,
+  AlertCircle,
 } from "lucide-react"
 import {
   BarChart,
@@ -35,6 +36,8 @@ import {
   Area,
   AreaChart,
 } from "recharts"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
 
 interface WarrantyData {
   shop: string;
@@ -62,6 +65,37 @@ const monthlyData = [
   { month: "Apr", successful: 40, rejected: 12 },
   { month: "May", successful: 45, rejected: 15 },
   { month: "Jun", successful: 50, rejected: 20 },
+]
+
+const warrantyStats = [
+  {
+    title: "Total Claims",
+    value: "5",
+    change: "+2",
+    trend: "up",
+    icon: ClipboardCheck,
+  },
+  {
+    title: "To Be Assessed",
+    value: "5",
+    change: "+1",
+    trend: "up",
+    icon: AlertCircle,
+  },
+  {
+    title: "In Progress",
+    value: "0",
+    change: "0",
+    trend: "neutral",
+    icon: Clock,
+  },
+  {
+    title: "No Opportunity",
+    value: "0",
+    change: "0",
+    trend: "neutral",
+    icon: AlertCircle,
+  },
 ]
 
 const COLORS = {
@@ -111,132 +145,63 @@ export default function WarrantyMetrics() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-          Warranty Metrics
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Track and analyze warranty claims and assessments
-        </p>
+    <div className="space-y-8 p-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+            Warranty Metrics
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Track and manage warranty claims across all shops
+          </p>
+        </div>
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CustomCard
-          title="Shop-wise Warranty Status"
-          icon={<Building2 className="h-5 w-5" />}
-          className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-        >
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={prepareShopChartData()}>
-                <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fill: COLORS.text }}
-                  axisLine={{ stroke: COLORS.text }}
-                />
-                <YAxis 
-                  tick={{ fill: COLORS.text }}
-                  axisLine={{ stroke: COLORS.text }}
-                />
-                <RechartsTooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar 
-                  dataKey="toBeAssessed" 
-                  fill={COLORS.primary} 
-                  name="To Be Assessed"
-                  radius={[4, 4, 0, 0]}
-                  animationDuration={1500}
-                />
-                <Bar 
-                  dataKey="noOpportunity" 
-                  fill={COLORS.tertiary} 
-                  name="No Opportunity"
-                  radius={[4, 4, 0, 0]}
-                  animationDuration={1500}
-                />
-                <Bar 
-                  dataKey="inProgress" 
-                  fill={COLORS.secondary} 
-                  name="In Progress"
-                  radius={[4, 4, 0, 0]}
-                  animationDuration={1500}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CustomCard>
-
-        <CustomCard
-          title="Claims Distribution"
-          icon={<ClipboardCheck className="h-5 w-5" />}
-          className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-        >
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={prepareClaimsPieData()}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  animationDuration={1500}
-                  animationBegin={0}
-                >
-                  {prepareClaimsPieData().map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={Object.values(COLORS)[index % 3]}
-                      stroke={COLORS.background}
-                      strokeWidth={2}
-                    />
-                  ))}
-                </Pie>
-                <RechartsTooltip content={<CustomTooltip />} />
-                <Legend 
-                  verticalAlign="bottom" 
-                  height={36}
-                  formatter={(value) => (
-                    <span className="text-sm" style={{ color: COLORS.text }}>
-                      {value}
-                    </span>
-                  )}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </CustomCard>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {warrantyStats.map((stat) => (
+          <Card key={stat.title} className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
+              <div className={`p-2 rounded-lg ${
+                stat.trend === "up" ? "bg-green-100 text-green-600" :
+                stat.trend === "down" ? "bg-red-100 text-red-600" :
+                "bg-gray-100 text-gray-600"
+              }`}>
+                <stat.icon className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="flex items-center text-xs text-muted-foreground mt-2">
+                {stat.trend === "up" ? (
+                  <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                ) : stat.trend === "down" ? (
+                  <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
+                ) : null}
+                {stat.change} from last month
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Monthly Trends */}
-      <CustomCard
-        title="Monthly Claims Trend"
-        icon={<FileText className="h-5 w-5" />}
-        className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-      >
-        <div className="h-[300px]">
+      {/* Warranty Status Chart */}
+      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+        <CardHeader className="border-b border-[#FF4F59]/20">
+          <CardTitle className="flex items-center">
+            <ClipboardCheck className="h-5 w-5 mr-2" />
+            Warranty Status by Shop
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6 h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={monthlyData}>
-              <defs>
-                <linearGradient id="colorSuccessful" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorRejected" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.secondary} stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor={COLORS.secondary} stopOpacity={0}/>
-                </linearGradient>
-              </defs>
+            <BarChart data={warrantyData}>
               <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
               <XAxis 
-                dataKey="month" 
+                dataKey="shop" 
                 tick={{ fill: COLORS.text }}
                 axisLine={{ stroke: COLORS.text }}
               />
@@ -254,28 +219,67 @@ export default function WarrantyMetrics() {
                   </span>
                 )}
               />
-              <Area 
-                type="monotone" 
-                dataKey="successful" 
-                stroke={COLORS.primary}
-                fillOpacity={1} 
-                fill="url(#colorSuccessful)"
-                name="Successful Claims"
+              <Bar 
+                dataKey="toBeAssessed" 
+                fill={COLORS.primary} 
+                name="To Be Assessed"
+                radius={[4, 4, 0, 0]}
                 animationDuration={1500}
               />
-              <Area 
-                type="monotone" 
-                dataKey="rejected" 
-                stroke={COLORS.secondary}
-                fillOpacity={1} 
-                fill="url(#colorRejected)"
-                name="Rejected Claims"
+              <Bar 
+                dataKey="inProgress" 
+                fill={COLORS.secondary} 
+                name="In Progress"
+                radius={[4, 4, 0, 0]}
                 animationDuration={1500}
               />
-            </AreaChart>
+              <Bar 
+                dataKey="noOpportunity" 
+                fill={COLORS.tertiary} 
+                name="No Opportunity"
+                radius={[4, 4, 0, 0]}
+                animationDuration={1500}
+              />
+            </BarChart>
           </ResponsiveContainer>
-        </div>
-      </CustomCard>
+        </CardContent>
+      </Card>
+
+      {/* Detailed Status */}
+      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+        <CardHeader className="border-b border-[#FF4F59]/20">
+          <CardTitle className="flex items-center">
+            <ClipboardCheck className="h-5 w-5 mr-2" />
+            Detailed Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            {warrantyData.map((shop) => (
+              <div key={shop.shop} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{shop.shop}</span>
+                  <div className="flex space-x-2">
+                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                      {shop.toBeAssessed} To Assess
+                    </Badge>
+                    <Badge variant="secondary" className="bg-[#FFAD28]/10 text-[#FFAD28]">
+                      {shop.inProgress} In Progress
+                    </Badge>
+                    <Badge variant="secondary" className="bg-[#444744]/10 text-[#444744]">
+                      {shop.noOpportunity} No Opportunity
+                    </Badge>
+                  </div>
+                </div>
+                <Progress 
+                  value={(shop.toBeAssessed + shop.inProgress + shop.noOpportunity) * 20} 
+                  className="h-2"
+                />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Search and Timeframe */}
       <div className="flex flex-col md:flex-row justify-between gap-4">

@@ -16,8 +16,6 @@ import {
   Moon,
   User,
   Building2,
-  CreditCard,
-  MessageSquare,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -47,17 +45,11 @@ const navItems = [
     href: "/final-invoice-status",
   },
   { 
-    id: "messages", 
-    icon: MessageSquare, 
-    label: "Messages", 
-    href: "/messages",
-    badge: 3,
-  },
-  { 
-    id: "cards", 
-    icon: CreditCard, 
-    label: "Cards", 
-    href: "/cards",
+    id: "notifications", 
+    icon: Bell, 
+    label: "Notifications", 
+    href: "/notifications",
+    badge: 5,
   },
   { 
     id: "settings", 

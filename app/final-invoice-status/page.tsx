@@ -1,193 +1,219 @@
 "use client"
 
-import { useState } from "react"
-import { CustomCard } from "../components/ui/custom-card"
-import { CustomButton } from "../components/ui/custom-button"
-import { SearchInput } from "../components/ui/custom-input"
+import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import {
-  FileText,
-  CheckCircle2,
-  Clock,
-  ArrowUpRight,
-  ArrowDownRight,
-  Download,
-  Filter,
-} from "lucide-react"
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts"
 
-interface InvoiceData {
-  id: string;
-  customer: string;
-  amount: number;
-  status: "pending" | "approved" | "rejected";
-  date: string;
-  shop: string;
-}
-
-const invoiceData: InvoiceData[] = [
-  { id: "INV-001", customer: "John Doe", amount: 1250.00, status: "pending", date: "2024-03-15", shop: "Shop1" },
-  { id: "INV-002", customer: "Jane Smith", amount: 850.50, status: "approved", date: "2024-03-14", shop: "Shop2" },
-  { id: "INV-003", customer: "Bob Johnson", amount: 2100.75, status: "rejected", date: "2024-03-13", shop: "Shop3" },
-  { id: "INV-004", customer: "Alice Brown", amount: 950.25, status: "approved", date: "2024-03-12", shop: "Shop1" },
-  { id: "INV-005", customer: "Charlie Wilson", amount: 1750.00, status: "pending", date: "2024-03-11", shop: "Shop2" },
+const invoiceData = [
+  { shop: "Shop1", engines: 12, due: 10, issued: 1, upcoming: 1 },
+  { shop: "Shop2", engines: 7, due: 5, issued: 1, upcoming: 1 },
+  { shop: "Shop3", engines: 4, due: 1, issued: 3, upcoming: 0 }
 ]
 
-export default function FinalInvoiceStatus() {
-  const [activeTimeframe, setActiveTimeframe] = useState("1w")
-  const [searchQuery, setSearchQuery] = useState("")
+const invoiceStats = [
+  {
+    title: "Total Engines",
+    value: "23",
+    change: "+3",
+    trend: "up",
+    icon: FileText,
+  },
+  {
+    title: "Due Invoices",
+    value: "16",
+    change: "+2",
+    trend: "up",
+    icon: AlertCircle,
+  },
+  {
+    title: "Issued Invoices",
+    value: "5",
+    change: "+1",
+    trend: "up",
+    icon: CheckCircle2,
+  },
+  {
+    title: "Upcoming Invoices",
+    value: "2",
+    change: "0",
+    trend: "neutral",
+    icon: Clock,
+  },
+]
 
-  const filteredInvoices = invoiceData.filter(invoice => 
-    invoice.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    invoice.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    invoice.shop.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+const COLORS = {
+  primary: '#FF4F59',
+  secondary: '#FFAD28',
+  tertiary: '#444744',
+  background: '#FFFAF4',
+  text: '#181C23',
+  grid: '#FF4F59/10',
+}
 
-  const stats = {
-    total: invoiceData.length,
-    approved: invoiceData.filter(i => i.status === "approved").length,
-    pending: invoiceData.filter(i => i.status === "pending").length,
-    rejected: invoiceData.filter(i => i.status === "rejected").length,
-    totalAmount: invoiceData.reduce((acc, curr) => acc + curr.amount, 0)
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-4 rounded-lg shadow-lg border border-[#FF4F59]/20">
+        <p className="font-medium text-[#181C23]">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="text-sm" style={{ color: entry.color }}>
+            {entry.name}: {entry.value}
+          </p>
+        ))}
+      </div>
+    )
   }
+  return null
+}
 
+export default function FinalInvoiceStatusPage() {
   return (
-    <div className="space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-          Final Invoice Status
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Track and manage final invoice approvals
-        </p>
-      </div>
-
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <CustomCard
-          title="Total Invoices"
-          icon={<FileText className="h-4 w-4" />}
-        >
-          <div className="text-2xl font-bold">{stats.total}</div>
-          <div className="flex items-center text-xs text-muted-foreground mt-2">
-            <ArrowUpRight className="h-4 w-4 text-[#FF4F59] mr-1" />
-            <span>5% from last month</span>
-          </div>
-        </CustomCard>
-
-        <CustomCard
-          title="Approved"
-          icon={<CheckCircle2 className="h-4 w-4" />}
-        >
-          <div className="text-2xl font-bold">{stats.approved}</div>
-          <div className="flex items-center text-xs text-muted-foreground mt-2">
-            <ArrowUpRight className="h-4 w-4 text-[#FF4F59] mr-1" />
-            <span>8% from last month</span>
-          </div>
-        </CustomCard>
-
-        <CustomCard
-          title="Pending"
-          icon={<Clock className="h-4 w-4" />}
-        >
-          <div className="text-2xl font-bold">{stats.pending}</div>
-          <div className="flex items-center text-xs text-muted-foreground mt-2">
-            <ArrowDownRight className="h-4 w-4 text-[#FFAD28] mr-1" />
-            <span>3% from last month</span>
-          </div>
-        </CustomCard>
-
-        <CustomCard
-          title="Total Amount"
-          icon={<FileText className="h-4 w-4" />}
-        >
-          <div className="text-2xl font-bold">${stats.totalAmount.toLocaleString()}</div>
-          <div className="flex items-center text-xs text-muted-foreground mt-2">
-            <ArrowUpRight className="h-4 w-4 text-[#FF4F59] mr-1" />
-            <span>12% from last month</span>
-          </div>
-        </CustomCard>
-      </div>
-
-      {/* Search and Timeframe */}
-      <div className="flex flex-col md:flex-row justify-between gap-4">
-        <div className="flex gap-4">
-          <SearchInput
-            placeholder="Search invoices..."
-            value={searchQuery}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-            className="w-full md:w-96"
-          />
-          <div className="flex items-center gap-2">
-            <CustomButton variant="ghost" size="sm" icon={<Download className="h-4 w-4" />}>
-              Export
-            </CustomButton>
-            <CustomButton variant="ghost" size="sm" icon={<Filter className="h-4 w-4" />}>
-              Filter
-            </CustomButton>
-          </div>
-        </div>
-        <div className="flex space-x-2">
-          {["1d", "1w", "1m", "3m", "1y"].map((timeframe) => (
-            <CustomButton
-              key={timeframe}
-              variant={activeTimeframe === timeframe ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveTimeframe(timeframe)}
-            >
-              {timeframe}
-            </CustomButton>
-          ))}
+    <div className="space-y-8 p-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+            Final Invoice Status
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Track and manage final invoices across all shops
+          </p>
         </div>
       </div>
 
-      {/* Invoice List */}
-      <CustomCard
-        title="Recent Invoices"
-        icon={<FileText className="h-5 w-5" />}
-      >
-        <div className="space-y-4">
-          {filteredInvoices.map((invoice) => (
-            <div 
-              key={invoice.id} 
-              className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 hover:border-[#FF4F59]/40 transition-all duration-300"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#FF4F59]/10 to-[#FFAD28]/10 flex items-center justify-center">
-                  <FileText className="h-6 w-6 text-[#FF4F59]" />
-                </div>
-                <div>
-                  <div className="font-medium">{invoice.id}</div>
-                  <div className="text-sm text-muted-foreground">{invoice.customer}</div>
-                </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {invoiceStats.map((stat) => (
+          <Card key={stat.title} className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {stat.title}
+              </CardTitle>
+              <div className={`p-2 rounded-lg ${
+                stat.trend === "up" ? "bg-green-100 text-green-600" :
+                stat.trend === "down" ? "bg-red-100 text-red-600" :
+                "bg-gray-100 text-gray-600"
+              }`}>
+                <stat.icon className="h-4 w-4" />
               </div>
-              <div className="flex items-center space-x-8">
-                <div className="text-right">
-                  <div className="font-medium">${invoice.amount.toLocaleString()}</div>
-                  <div className="text-sm text-muted-foreground">{invoice.shop}</div>
-                </div>
-                <Badge 
-                  variant="secondary" 
-                  className={
-                    invoice.status === "approved" ? "bg-green-500/10 text-green-500" :
-                    invoice.status === "pending" ? "bg-yellow-500/10 text-yellow-500" :
-                    "bg-red-500/10 text-red-500"
-                  }
-                >
-                  {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-                </Badge>
-                <CustomButton
-                  variant="ghost"
-                  size="sm"
-                  icon={<Download className="h-4 w-4" />}
-                >
-                  Download
-                </CustomButton>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <div className="flex items-center text-xs text-muted-foreground mt-2">
+                {stat.trend === "up" ? (
+                  <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                ) : stat.trend === "down" ? (
+                  <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
+                ) : null}
+                {stat.change} from last month
               </div>
-            </div>
-          ))}
-        </div>
-      </CustomCard>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Invoice Status Chart */}
+      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+        <CardHeader className="border-b border-[#FF4F59]/20">
+          <CardTitle className="flex items-center">
+            <FileText className="h-5 w-5 mr-2" />
+            Invoice Status by Shop
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6 h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={invoiceData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+              <XAxis 
+                dataKey="shop" 
+                tick={{ fill: COLORS.text }}
+                axisLine={{ stroke: COLORS.text }}
+              />
+              <YAxis 
+                tick={{ fill: COLORS.text }}
+                axisLine={{ stroke: COLORS.text }}
+              />
+              <RechartsTooltip content={<CustomTooltip />} />
+              <Legend 
+                verticalAlign="top" 
+                height={36}
+                formatter={(value) => (
+                  <span className="text-sm" style={{ color: COLORS.text }}>
+                    {value}
+                  </span>
+                )}
+              />
+              <Bar 
+                dataKey="engines" 
+                fill={COLORS.primary} 
+                name="Total Engines"
+                radius={[4, 4, 0, 0]}
+                animationDuration={1500}
+              />
+              <Bar 
+                dataKey="due" 
+                fill={COLORS.secondary} 
+                name="Due"
+                radius={[4, 4, 0, 0]}
+                animationDuration={1500}
+              />
+              <Bar 
+                dataKey="issued" 
+                fill={COLORS.tertiary} 
+                name="Issued"
+                radius={[4, 4, 0, 0]}
+                animationDuration={1500}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Detailed Status */}
+      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+        <CardHeader className="border-b border-[#FF4F59]/20">
+          <CardTitle className="flex items-center">
+            <FileText className="h-5 w-5 mr-2" />
+            Detailed Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            {invoiceData.map((shop) => (
+              <div key={shop.shop} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{shop.shop}</span>
+                  <div className="flex space-x-2">
+                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                      {shop.due} Due
+                    </Badge>
+                    <Badge variant="secondary" className="bg-[#FFAD28]/10 text-[#FFAD28]">
+                      {shop.issued} Issued
+                    </Badge>
+                    <Badge variant="secondary" className="bg-[#444744]/10 text-[#444744]">
+                      {shop.upcoming} Upcoming
+                    </Badge>
+                  </div>
+                </div>
+                <Progress 
+                  value={(shop.due + shop.issued + shop.upcoming) * 10} 
+                  className="h-2"
+                />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 } 
