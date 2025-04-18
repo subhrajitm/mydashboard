@@ -24,33 +24,36 @@ const invoiceData = [
   { shop: "Shop3", engines: 4, due: 1, issued: 3, upcoming: 0 }
 ]
 
-const invoiceStats = [
+interface InvoiceStat {
+  title: string
+  value: string
+  description: string
+  icon: React.ElementType
+}
+
+const invoiceStats: InvoiceStat[] = [
   {
     title: "Total Engines",
-    value: "23",
-    change: "+3",
-    trend: "up",
+    value: "40",
+    description: "Across all shops",
     icon: FileText,
   },
   {
     title: "Due Invoices",
-    value: "16",
-    change: "+2",
-    trend: "up",
+    value: "12",
+    description: "Pending payment",
     icon: AlertCircle,
   },
   {
     title: "Issued Invoices",
-    value: "5",
-    change: "+1",
-    trend: "up",
+    value: "25",
+    description: "Successfully processed",
     icon: CheckCircle2,
   },
   {
     title: "Upcoming Invoices",
-    value: "2",
-    change: "0",
-    trend: "neutral",
+    value: "3",
+    description: "Scheduled for next month",
     icon: Clock,
   },
 ]
@@ -85,212 +88,96 @@ export default function FinalInvoiceStatusPage() {
   const [searchQuery, setSearchQuery] = useState("")
 
   return (
-    <div className="space-y-8 p-6">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-                Final Invoice Status
-              </h1>
-              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                Updated 5m ago
-              </Badge>
-            </div>
-            <p className="text-lg text-muted-foreground">
-              Track and manage final invoices across all shops
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Plus className="h-4 w-4 mr-2" />
-              New Invoice
-            </Button>
-          </div>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+            Final Invoice Status
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Track and manage final invoice status across all shops
+          </p>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
-              </div>
-              <Input
-                placeholder="Search invoices..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-72 pl-10 pr-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
-              />
-              {searchQuery && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 hover:bg-[#FF4F59]/10"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    <X className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              {["All", "Due", "Issued", "Upcoming"].map((status) => (
-                <Button
-                  key={status}
-                  variant={activeStatus === status ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setActiveStatus(status)}
-                  className={activeStatus === status ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
-                >
-                  {status}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Calendar className="h-4 w-4 mr-2" />
-              Date Range
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm border-white/30"
+          />
+          {searchQuery && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6"
+              onClick={() => setSearchQuery("")}
+            >
+              <X className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <SortAsc className="h-4 w-4 mr-2" />
-              Sort
-            </Button>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {invoiceStats.map((stat) => (
-          <Card key={stat.title} className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+          <Card key={stat.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              <div className={`p-2 rounded-lg ${
-                stat.trend === "up" ? "bg-green-100 text-green-600" :
-                stat.trend === "down" ? "bg-red-100 text-red-600" :
-                "bg-gray-100 text-gray-600"
-              }`}>
-                <stat.icon className="h-4 w-4" />
-              </div>
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center text-xs text-muted-foreground mt-2">
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
-                ) : stat.trend === "down" ? (
-                  <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
-                ) : null}
-                {stat.change} from last month
-              </div>
+              <p className="text-xs text-muted-foreground">{stat.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Invoice Status Chart */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <FileText className="h-5 w-5 mr-2" />
-            Invoice Status by Shop
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={invoiceData}>
-              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-              <XAxis 
-                dataKey="shop" 
-                tick={{ fill: COLORS.text }}
-                axisLine={{ stroke: COLORS.text }}
-              />
-              <YAxis 
-                tick={{ fill: COLORS.text }}
-                axisLine={{ stroke: COLORS.text }}
-              />
-              <RechartsTooltip content={<CustomTooltip />} />
-              <Legend 
-                verticalAlign="top" 
-                height={36}
-                formatter={(value) => (
-                  <span className="text-sm" style={{ color: COLORS.text }}>
-                    {value}
-                  </span>
-                )}
-              />
-              <Bar 
-                dataKey="engines" 
-                fill={COLORS.primary} 
-                name="Total Engines"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-              <Bar 
-                dataKey="due" 
-                fill={COLORS.secondary} 
-                name="Due"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-              <Bar 
-                dataKey="issued" 
-                fill={COLORS.tertiary} 
-                name="Issued"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
+          <CardHeader>
+            <CardTitle>Invoice Status by Shop</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={invoiceData}>
+                  <XAxis dataKey="shop" />
+                  <YAxis />
+                  <RechartsTooltip content={<CustomTooltip />} />
+                  <Bar dataKey="due" fill="#FF4F59" />
+                  <Bar dataKey="issued" fill="#FFAD28" />
+                  <Bar dataKey="upcoming" fill="#444744" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Detailed Status */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <FileText className="h-5 w-5 mr-2" />
-            Detailed Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-6">
-            {invoiceData.map((shop) => (
-              <div key={shop.shop} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{shop.shop}</span>
-                  <div className="flex space-x-2">
-                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                      {shop.due} Due
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#FFAD28]/10 text-[#FFAD28]">
-                      {shop.issued} Issued
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#444744]/10 text-[#444744]">
-                      {shop.upcoming} Upcoming
-                    </Badge>
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
+          <CardHeader>
+            <CardTitle>Detailed Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {invoiceData.map((shop) => (
+                <div key={shop.shop} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">{shop.shop}</h3>
+                    <div className="flex gap-2">
+                      <Badge variant="destructive">{shop.due} Due</Badge>
+                      <Badge variant="outline">{shop.issued} Issued</Badge>
+                      <Badge variant="secondary">{shop.upcoming} Upcoming</Badge>
+                    </div>
                   </div>
+                  <Progress value={(shop.due / (shop.due + shop.issued + shop.upcoming)) * 100} />
                 </div>
-                <Progress 
-                  value={(shop.due + shop.issued + shop.upcoming) * 10} 
-                  className="h-2"
-                />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 } 

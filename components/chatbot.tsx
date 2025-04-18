@@ -48,7 +48,7 @@ export function Chatbot() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 rounded-full w-12 h-12 bg-[#FF4F59] hover:bg-[#FF4F59]/90"
+        className="fixed bottom-4 right-4 rounded-full w-12 h-12 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 shadow-lg hover:shadow-xl transition-all duration-300"
       >
         <MessageSquare className="h-6 w-6 text-white" />
       </Button>
@@ -56,19 +56,21 @@ export function Chatbot() {
   }
 
   return (
-    <Card className={`fixed bottom-4 right-4 w-96 bg-white shadow-lg transition-all duration-300 ${
+    <Card className={`fixed bottom-4 right-4 w-96 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg transition-all duration-300 ${
       isMinimized ? "h-16" : "h-[500px]"
     }`}>
-      <div className="flex items-center justify-between p-3 border-b">
+      <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5 text-[#FF4F59]" />
+          <div className="p-1.5 rounded-lg bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]">
+            <MessageSquare className="h-5 w-5 text-white" />
+          </div>
           <span className="font-medium">Chat Assistant</span>
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setIsMinimized(!isMinimized)}
           >
             {isMinimized ? (
@@ -80,7 +82,7 @@ export function Chatbot() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 w-8 p-0"
+            className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={() => setIsOpen(false)}
           >
             <X className="h-4 w-4" />
@@ -107,8 +109,8 @@ export function Chatbot() {
                     <div
                       className={`max-w-[80%] rounded-lg p-3 ${
                         message.sender === "user"
-                          ? "bg-[#FF4F59] text-white"
-                          : "bg-gray-100"
+                          ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white"
+                          : "bg-gray-100 dark:bg-gray-800"
                       }`}
                     >
                       {message.text}
@@ -119,13 +121,13 @@ export function Chatbot() {
             )}
           </div>
 
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-gray-200 dark:border-gray-800">
             <div className="flex gap-2">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1"
+                className="flex-1 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-800"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     handleSendMessage()
@@ -134,7 +136,7 @@ export function Chatbot() {
               />
               <Button
                 onClick={handleSendMessage}
-                className="bg-[#FF4F59] hover:bg-[#FF4F59]/90"
+                className="bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90"
               >
                 <Send className="h-4 w-4" />
               </Button>

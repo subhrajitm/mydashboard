@@ -20,6 +20,8 @@ import {
   AlertCircle,
   RefreshCw,
   X,
+  CheckCircle,
+  XCircle,
 } from "lucide-react"
 import {
   BarChart,
@@ -45,16 +47,24 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
 interface WarrantyData {
-  shop: string;
-  toBeAssessed: number;
-  noOpportunity: number;
-  inProgress: number;
+  shop: string
+  approved: number
+  pending: number
+  rejected: number
+}
+
+interface WarrantyStat {
+  title: string
+  value: string
+  description: string
+  icon: React.ElementType
 }
 
 const warrantyData: WarrantyData[] = [
-  { shop: "Shop1", toBeAssessed: 1, noOpportunity: 0, inProgress: 0 },
-  { shop: "Shop2", toBeAssessed: 1, noOpportunity: 0, inProgress: 0 },
-  { shop: "Shop3", toBeAssessed: 3, noOpportunity: 0, inProgress: 0 }
+  { shop: "Shop A", approved: 12, pending: 5, rejected: 3 },
+  { shop: "Shop B", approved: 8, pending: 7, rejected: 2 },
+  { shop: "Shop C", approved: 15, pending: 3, rejected: 1 },
+  { shop: "Shop D", approved: 10, pending: 4, rejected: 2 },
 ]
 
 const claimsDistribution = {
@@ -72,34 +82,30 @@ const monthlyData = [
   { month: "Jun", successful: 50, rejected: 20 },
 ]
 
-const warrantyStats = [
+const warrantyStats: WarrantyStat[] = [
   {
     title: "Total Claims",
-    value: "5",
-    change: "+2",
-    trend: "up",
+    value: "40",
+    description: "Across all shops",
     icon: ClipboardCheck,
   },
   {
-    title: "To Be Assessed",
-    value: "5",
-    change: "+1",
-    trend: "up",
-    icon: AlertCircle,
+    title: "Approved",
+    value: "45",
+    description: "Successfully processed",
+    icon: CheckCircle,
   },
   {
-    title: "In Progress",
-    value: "0",
-    change: "0",
-    trend: "neutral",
+    title: "Pending",
+    value: "19",
+    description: "Under review",
     icon: Clock,
   },
   {
-    title: "No Opportunity",
-    value: "0",
-    change: "0",
-    trend: "neutral",
-    icon: AlertCircle,
+    title: "Rejected",
+    value: "8",
+    description: "Not eligible",
+    icon: XCircle,
   },
 ]
 
@@ -136,9 +142,9 @@ export default function WarrantyMetrics() {
   const prepareShopChartData = () => {
     return warrantyData.map(shop => ({
       name: shop.shop,
-      toBeAssessed: shop.toBeAssessed,
-      noOpportunity: shop.noOpportunity,
-      inProgress: shop.inProgress,
+      approved: shop.approved,
+      pending: shop.pending,
+      rejected: shop.rejected,
     }))
   }
 
@@ -151,215 +157,96 @@ export default function WarrantyMetrics() {
   }
 
   return (
-    <div className="space-y-8 p-6">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-                Warranty Metrics
-              </h1>
-              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                Live
-              </Badge>
-            </div>
-            <p className="text-lg text-muted-foreground">
-              Track and manage warranty claims across all shops
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-          </div>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+            Warranty Metrics
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Track and analyze warranty claims across all shops
+          </p>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
-              </div>
-              <Input
-                placeholder="Search shops..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-72 pl-10 pr-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
-              />
-              {searchQuery && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 hover:bg-[#FF4F59]/10"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    <X className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              {["overview", "detailed", "analytics"].map((view) => (
-                <Button
-                  key={view}
-                  variant={activeView === view ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setActiveView(view)}
-                  className={activeView === view ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
-                >
-                  {view.charAt(0).toUpperCase() + view.slice(1)}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {["1d", "1w", "1m", "3m", "1y"].map((timeframe) => (
-              <Button
-                key={timeframe}
-                variant={activeTimeframe === timeframe ? "default" : "outline"}
-                size="sm"
-                onClick={() => setActiveTimeframe(timeframe)}
-                className={activeTimeframe === timeframe ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
-              >
-                {timeframe}
-              </Button>
-            ))}
-          </div>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm border-white/30"
+          />
+          {searchQuery && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6"
+              onClick={() => setSearchQuery("")}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {warrantyStats.map((stat) => (
-          <Card key={stat.title} className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
+          <Card key={stat.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              <div className={`p-2 rounded-lg ${
-                stat.trend === "up" ? "bg-green-100 text-green-600" :
-                stat.trend === "down" ? "bg-red-100 text-red-600" :
-                "bg-gray-100 text-gray-600"
-              }`}>
-                <stat.icon className="h-4 w-4" />
-              </div>
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center text-xs text-muted-foreground mt-2">
-                {stat.trend === "up" ? (
-                  <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
-                ) : stat.trend === "down" ? (
-                  <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
-                ) : null}
-                {stat.change} from last month
-              </div>
+              <p className="text-xs text-muted-foreground">{stat.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Warranty Status Chart */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <ClipboardCheck className="h-5 w-5 mr-2" />
-            Warranty Status by Shop
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 h-[400px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={warrantyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-              <XAxis 
-                dataKey="shop" 
-                tick={{ fill: COLORS.text }}
-                axisLine={{ stroke: COLORS.text }}
-              />
-              <YAxis 
-                tick={{ fill: COLORS.text }}
-                axisLine={{ stroke: COLORS.text }}
-              />
-              <RechartsTooltip content={<CustomTooltip />} />
-              <Legend 
-                verticalAlign="top" 
-                height={36}
-                formatter={(value) => (
-                  <span className="text-sm" style={{ color: COLORS.text }}>
-                    {value}
-                  </span>
-                )}
-              />
-              <Bar 
-                dataKey="toBeAssessed" 
-                fill={COLORS.primary} 
-                name="To Be Assessed"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-              <Bar 
-                dataKey="inProgress" 
-                fill={COLORS.secondary} 
-                name="In Progress"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-              <Bar 
-                dataKey="noOpportunity" 
-                fill={COLORS.tertiary} 
-                name="No Opportunity"
-                radius={[4, 4, 0, 0]}
-                animationDuration={1500}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
+          <CardHeader>
+            <CardTitle>Warranty Status by Shop</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={warrantyData}>
+                  <XAxis dataKey="shop" />
+                  <YAxis />
+                  <RechartsTooltip content={<CustomTooltip />} />
+                  <Bar dataKey="approved" fill="#FF4F59" />
+                  <Bar dataKey="pending" fill="#FFAD28" />
+                  <Bar dataKey="rejected" fill="#444744" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Detailed Status */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <ClipboardCheck className="h-5 w-5 mr-2" />
-            Detailed Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-6">
-            {warrantyData.map((shop) => (
-              <div key={shop.shop} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{shop.shop}</span>
-                  <div className="flex space-x-2">
-                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                      {shop.toBeAssessed} To Assess
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#FFAD28]/10 text-[#FFAD28]">
-                      {shop.inProgress} In Progress
-                    </Badge>
-                    <Badge variant="secondary" className="bg-[#444744]/10 text-[#444744]">
-                      {shop.noOpportunity} No Opportunity
-                    </Badge>
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
+          <CardHeader>
+            <CardTitle>Detailed Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {warrantyData.map((shop) => (
+                <div key={shop.shop} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">{shop.shop}</h3>
+                    <div className="flex gap-2">
+                      <Badge variant="destructive">{shop.approved} Approved</Badge>
+                      <Badge variant="outline">{shop.pending} Pending</Badge>
+                      <Badge variant="secondary">{shop.rejected} Rejected</Badge>
+                    </div>
                   </div>
+                  <Progress value={(shop.approved / (shop.approved + shop.pending + shop.rejected)) * 100} />
                 </div>
-                <Progress 
-                  value={(shop.toBeAssessed + shop.inProgress + shop.noOpportunity) * 20} 
-                  className="h-2"
-                />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 } 
