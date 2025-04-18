@@ -471,8 +471,110 @@ export default function WarrantyMetrics() {
           {/* Reports content will be added here */}
         </TabsContent>
 
-        <TabsContent value="settings" className="space-y-8">
-          {/* Settings content will be added here */}
+        <TabsContent value="settings" className="space-y-4">
+          {/* Settings Section */}
+          <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+            <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
+              <CardTitle className="text-lg">Display Settings</CardTitle>
+              <CardDescription className="text-xs">Customize how warranty metrics are displayed</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <div>
+                    <p className="text-sm font-medium">Dark Mode</p>
+                    <p className="text-xs text-muted-foreground">Toggle between light and dark theme</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
+                    Toggle Theme
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <div>
+                    <p className="text-sm font-medium">Chart Type</p>
+                    <p className="text-xs text-muted-foreground">Set default chart visualization</p>
+                  </div>
+                  <Select defaultValue="bar">
+                    <SelectTrigger className="w-[140px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                      <SelectValue placeholder="Select chart type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                      <SelectItem value="bar">Bar Chart</SelectItem>
+                      <SelectItem value="line">Line Chart</SelectItem>
+                      <SelectItem value="area">Area Chart</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+            <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
+              <CardTitle className="text-lg">Notification Preferences</CardTitle>
+              <CardDescription className="text-xs">Manage your notification settings</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <div>
+                    <p className="text-sm font-medium">Email Notifications</p>
+                    <p className="text-xs text-muted-foreground">Receive updates via email</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
+                    Configure
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <div>
+                    <p className="text-sm font-medium">Alert Thresholds</p>
+                    <p className="text-xs text-muted-foreground">Set custom alert triggers</p>
+                  </div>
+                  <Input 
+                    type="number" 
+                    placeholder="Enter threshold" 
+                    className="w-[140px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+            <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
+              <CardTitle className="text-lg">Data Export</CardTitle>
+              <CardDescription className="text-xs">Configure data export settings</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4 space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <div>
+                    <p className="text-sm font-medium">Export Format</p>
+                    <p className="text-xs text-muted-foreground">Choose default export format</p>
+                  </div>
+                  <Select defaultValue="csv">
+                    <SelectTrigger className="w-[140px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                      <SelectValue placeholder="Select format" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                      <SelectItem value="csv">CSV</SelectItem>
+                      <SelectItem value="excel">Excel</SelectItem>
+                      <SelectItem value="pdf">PDF</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <div>
+                    <p className="text-sm font-medium">Schedule Exports</p>
+                    <p className="text-xs text-muted-foreground">Set up automated exports</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
+                    Schedule
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 

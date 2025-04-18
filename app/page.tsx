@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const stats = [
   {
@@ -39,22 +40,27 @@ const stats = [
 ]
 
 const revenueData = [
-  { name: "Jan", revenue: 4000 },
-  { name: "Feb", revenue: 3000 },
-  { name: "Mar", revenue: 5000 },
-  { name: "Apr", revenue: 2780 },
-  { name: "May", revenue: 1890 },
-  { name: "Jun", revenue: 2390 },
+  { name: "Jan", revenue: 4000, previousRevenue: 3200, transactions: 156 },
+  { name: "Feb", revenue: 3000, previousRevenue: 2800, transactions: 142 },
+  { name: "Mar", revenue: 5000, previousRevenue: 4100, transactions: 189 },
+  { name: "Apr", revenue: 2780, previousRevenue: 2400, transactions: 134 },
+  { name: "May", revenue: 1890, previousRevenue: 2100, transactions: 116 },
+  { name: "Jun", revenue: 2390, previousRevenue: 2000, transactions: 125 },
 ]
 
 const expenseData = [
-  { name: "Operations", value: 400 },
-  { name: "Marketing", value: 300 },
-  { name: "Development", value: 300 },
-  { name: "HR", value: 200 },
+  { name: "Operations", value: 400, description: "Day-to-day operational costs" },
+  { name: "Marketing", value: 300, description: "Advertising and promotions" },
+  { name: "Development", value: 300, description: "Product development" },
+  { name: "HR", value: 200, description: "Human resources and training" },
 ]
 
-const COLORS = ["#FF4F59", "#FFAD28", "#4F46E5", "#10B981"]
+const COLORS = {
+  Operations: "#FF4F59",
+  Marketing: "#FFAD28",
+  Development: "#4F46E5",
+  HR: "#10B981"
+}
 
 const transactions = [
   {
@@ -191,28 +197,145 @@ export default function DashboardPage() {
       {/* Charts Section */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Revenue Overview</CardTitle>
-            <CardDescription className="text-xs">Track your revenue growth and trends</CardDescription>
+          <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Revenue Overview</CardTitle>
+                <CardDescription className="text-xs">Track your revenue growth and trends</CardDescription>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-[#FF4F59]" />
+                    <span className="text-xs text-muted-foreground">Current</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-[#FF4F59]/20" />
+                    <span className="text-xs text-muted-foreground">Previous</span>
+                  </div>
+                </div>
+                <Select defaultValue="6m">
+                  <SelectTrigger className="w-[110px] h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                    <SelectValue placeholder="Select range" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                    <SelectItem value="1m">1 Month</SelectItem>
+                    <SelectItem value="3m">3 Months</SelectItem>
+                    <SelectItem value="6m">6 Months</SelectItem>
+                    <SelectItem value="1y">1 Year</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Total Revenue</p>
+                <p className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                  ${revenueData.reduce((acc, curr) => acc + curr.revenue, 0).toLocaleString()}
+                </p>
+                <div className="flex items-center gap-1 text-green-500">
+                  <ArrowUpRight className="h-3 w-3" />
+                  <span className="text-xs">+12.5% from previous</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Avg. Monthly Revenue</p>
+                <p className="text-2xl font-bold">
+                  ${Math.round(revenueData.reduce((acc, curr) => acc + curr.revenue, 0) / revenueData.length).toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">Based on last 6 months</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Total Transactions</p>
+                <p className="text-2xl font-bold">
+                  {revenueData.reduce((acc, curr) => acc + curr.transactions, 0).toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">{revenueData.length} months period</p>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-4">
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={revenueData}>
+                <AreaChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <defs>
                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#FF4F59" stopOpacity={0.2} />
                       <stop offset="95%" stopColor="#FF4F59" stopOpacity={0} />
                     </linearGradient>
+                    <linearGradient id="colorPreviousRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#FF4F59" stopOpacity={0.1} />
+                      <stop offset="95%" stopColor="#FF4F59" stopOpacity={0} />
+                    </linearGradient>
                   </defs>
-                  <XAxis dataKey="name" stroke="#888888" fontSize={10} />
-                  <YAxis stroke="#888888" fontSize={10} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" />
+                  <XAxis 
+                    dataKey="name" 
+                    stroke="currentColor" 
+                    strokeOpacity={0.5} 
+                    fontSize={10}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    stroke="currentColor"
+                    strokeOpacity={0.5}
+                    fontSize={10}
+                    tickLine={false}
+                    tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        const currentRevenue = payload[0].payload.revenue;
+                        const previousRevenue = payload[0].payload.previousRevenue;
+                        const transactions = payload[0].payload.transactions;
+                        const change = ((currentRevenue - previousRevenue) / previousRevenue * 100).toFixed(1);
+                        const isPositive = currentRevenue >= previousRevenue;
+
+                        return (
+                          <div className="bg-white/90 dark:bg-gray-800/90 p-3 rounded-lg shadow-xl border border-white/20 dark:border-gray-700/20 backdrop-blur-xl">
+                            <p className="text-sm font-medium">{payload[0].payload.name}</p>
+                            <div className="mt-2 space-y-1">
+                              <div className="flex items-center justify-between gap-4">
+                                <span className="text-xs text-muted-foreground">Current</span>
+                                <span className="text-sm font-medium">${currentRevenue.toLocaleString()}</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-4">
+                                <span className="text-xs text-muted-foreground">Previous</span>
+                                <span className="text-sm font-medium">${previousRevenue.toLocaleString()}</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-4">
+                                <span className="text-xs text-muted-foreground">Change</span>
+                                <span className={`text-sm font-medium ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                                  {isPositive ? '+' : ''}{change}%
+                                </span>
+                              </div>
+                              <div className="pt-2 mt-2 border-t border-gray-200/10">
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="text-xs text-muted-foreground">Transactions</span>
+                                  <span className="text-sm font-medium">{transactions}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="previousRevenue"
+                    stroke="#FF4F59"
+                    strokeOpacity={0.2}
+                    strokeWidth={2}
+                    fill="url(#colorPreviousRevenue)"
+                  />
                   <Area
                     type="monotone"
                     dataKey="revenue"
                     stroke="#FF4F59"
-                    fillOpacity={1}
+                    strokeWidth={2}
                     fill="url(#colorRevenue)"
                   />
                 </AreaChart>
@@ -222,30 +345,92 @@ export default function DashboardPage() {
         </Card>
 
         <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Expense Breakdown</CardTitle>
-            <CardDescription className="text-xs">Analyze your expense categories</CardDescription>
+          <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Expense Breakdown</CardTitle>
+                <CardDescription className="text-xs">Analyze your expense categories</CardDescription>
+              </div>
+              <div className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                $1,200
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={expenseData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={70}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {expenseData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
+          <CardContent className="pt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-[250px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={expenseData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {expenseData.map((entry) => (
+                        <Cell 
+                          key={`cell-${entry.name}`} 
+                          fill={COLORS[entry.name as keyof typeof COLORS]}
+                          stroke="none"
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload;
+                          const percentage = ((data.value / expenseData.reduce((acc, curr) => acc + curr.value, 0)) * 100).toFixed(1);
+                          return (
+                            <div className="bg-white/90 dark:bg-gray-800/90 p-3 rounded-lg shadow-xl border border-white/20 dark:border-gray-700/20 backdrop-blur-xl">
+                              <p className="text-sm font-medium">{data.name}</p>
+                              <p className="text-xs text-muted-foreground">{data.description}</p>
+                              <div className="mt-1 flex items-center gap-2">
+                                <span className="text-sm font-medium">${data.value}</span>
+                                <span className="text-xs text-muted-foreground">({percentage}%)</span>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="space-y-3">
+                {expenseData.map((item) => {
+                  const percentage = ((item.value / expenseData.reduce((acc, curr) => acc + curr.value, 0)) * 100).toFixed(1);
+                  return (
+                    <div key={item.name} className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="h-3 w-3 rounded-full" 
+                            style={{ backgroundColor: COLORS[item.name as keyof typeof COLORS] }}
+                          />
+                          <span className="text-sm font-medium">{item.name}</span>
+                        </div>
+                        <span className="text-sm font-medium">${item.value}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-1.5 rounded-full bg-white/10 dark:bg-gray-800/10">
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${percentage}%`,
+                              backgroundColor: COLORS[item.name as keyof typeof COLORS]
+                            }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground">{percentage}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </CardContent>
         </Card>
