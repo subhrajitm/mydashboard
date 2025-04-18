@@ -120,7 +120,7 @@ const CustomSwitch = ({ checked, onCheckedChange }: { checked: boolean; onChecke
 }
 
 export default function SettingsPage() {
-  const [activeCategory, setActiveCategory] = useState("General")
+  const [activeCategory, setActiveCategory] = useState("Account Settings")
   const [searchQuery, setSearchQuery] = useState("")
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [pushNotifications, setPushNotifications] = useState(true)
@@ -130,8 +130,9 @@ export default function SettingsPage() {
   const [twoFactorAuth, setTwoFactorAuth] = useState(false)
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      <div className="relative rounded-2xl overflow-hidden">
+    <div className="max-w-7xl mx-auto space-y-4">
+      {/* Header Section */}
+      <div className="relative rounded-xl overflow-hidden">
         {/* Decorative background elements */}
         <div className="absolute inset-0 -z-10">
           {/* Gradient background */}
@@ -145,32 +146,32 @@ export default function SettingsPage() {
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-10" />
         </div>
 
-        <div className="flex flex-col space-y-4 p-6 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-gray-300/30 dark:border-gray-600/30">
+        <div className="flex flex-col space-y-2 p-4 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
           <div className="flex items-center justify-between">
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
                   Settings
                 </h1>
-                <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59] text-xs">
                   Admin
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Manage your account settings and preferences
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl">
-                <HelpCircle className="h-4 w-4 mr-1" />
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" className="h-7 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-xl">
+                <HelpCircle className="h-3.5 w-3.5 mr-1" />
                 Help
               </Button>
-              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl">
-                <Save className="h-4 w-4 mr-1" />
+              <Button variant="outline" size="sm" className="h-7 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-xl">
+                <Save className="h-3.5 w-3.5 mr-1" />
                 Save
               </Button>
-              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl">
-                <History className="h-4 w-4 mr-1" />
+              <Button variant="outline" size="sm" className="h-7 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-xl">
+                <History className="h-3.5 w-3.5 mr-1" />
                 History
               </Button>
             </div>
@@ -178,287 +179,138 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      {/* Main Content */}
+      <div className="grid grid-cols-12 gap-4">
+        {/* Sidebar Navigation */}
+        <div className="col-span-3">
+          <div className="sticky top-4 space-y-0.5">
+            {settingsSections.map((section) => (
+              <button
+                key={section.title}
+                onClick={() => setActiveCategory(section.title)}
+                className={`
+                  w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm
+                  ${activeCategory === section.title 
+                    ? 'bg-[#FF4F59]/10 text-[#FF4F59]' 
+                    : 'hover:bg-white/10 dark:hover:bg-gray-800/10 text-muted-foreground'
+                  }
+                `}
+              >
+                <section.icon className="h-4 w-4" />
+                <span className="font-medium">{section.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Settings Content */}
+        <div className="col-span-9 space-y-4">
+          {/* Search Bar */}
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-              <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
+              <Search className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
             </div>
             <Input
               placeholder="Search settings..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 h-9 pl-8 pr-8 bg-white/20 dark:bg-gray-800/20 border-gray-300/30 dark:border-gray-600/30 focus:border-gray-400/40 dark:focus:border-gray-500/40 focus:ring-1 focus:ring-gray-300/20 dark:focus:ring-gray-600/20 transition-all duration-200"
+              className="w-full h-8 pl-7 pr-7 bg-white/20 dark:bg-gray-800/20 border-white/10 dark:border-gray-700/10 focus:border-[#FF4F59]/20 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200 text-sm"
             />
             {searchQuery && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-2">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 w-7 p-0 hover:bg-[#FF4F59]/10"
+                  className="h-6 w-6 p-0 hover:bg-[#FF4F59]/10"
                   onClick={() => setSearchQuery("")}
                 >
-                  <X className="h-3 w-3 text-muted-foreground" />
+                  <X className="h-3.5 w-3.5" />
                 </Button>
               </div>
             )}
           </div>
-          <div className="flex items-center gap-1">
-            {["General", "Account", "Notifications", "Security", "Billing", "API"].map((category) => (
-              <Button
-                key={category}
-                variant={activeCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setActiveCategory(category)}
-                className={activeCategory === category ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl"}
-              >
-                {category}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </div>
 
-      <div className="grid gap-4">
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-            <CardContent className="p-3">
+          {/* Active Section Content */}
+          {settingsSections.map((section) => (
+            <div
+              key={section.title}
+              className={`space-y-3 ${activeCategory === section.title ? 'block' : 'hidden'}`}
+            >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">Profile</p>
-                  <p className="text-xl font-bold mt-0.5">85%</p>
+                <div className="flex items-center gap-2">
+                  <section.icon className="h-4 w-4 text-[#FF4F59]" />
+                  <h2 className="text-lg font-semibold">{section.title}</h2>
                 </div>
-                <div className="p-2 rounded-full bg-[#FF4F59]/10">
-                  <User className="h-4 w-4 text-[#FF4F59]" />
-                </div>
+                <Button variant="outline" size="sm" className="h-7 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10">
+                  <Save className="h-3.5 w-3.5 mr-1" />
+                  Save Changes
+                </Button>
               </div>
-              <Progress value={85} className="mt-2 h-1" />
-            </CardContent>
-          </Card>
-          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">Security</p>
-                  <p className="text-xl font-bold mt-0.5">92%</p>
-                </div>
-                <div className="p-2 rounded-full bg-[#FF4F59]/10">
-                  <Shield className="h-4 w-4 text-[#FF4F59]" />
-                </div>
+
+              <div className="grid gap-3">
+                {section.items.map((item) => (
+                  <Card
+                    key={item.title}
+                    className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-all duration-200"
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-sm">{item.title}</CardTitle>
+                          <CardDescription className="text-xs">{item.description}</CardDescription>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10"
+                        >
+                          {item.action}
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      {item.title === "Email Notifications" && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs">Enable email notifications</span>
+                          <CustomSwitch
+                            checked={emailNotifications}
+                            onCheckedChange={setEmailNotifications}
+                          />
+                        </div>
+                      )}
+                      {item.title === "Push Notifications" && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs">Enable push notifications</span>
+                          <CustomSwitch
+                            checked={pushNotifications}
+                            onCheckedChange={setPushNotifications}
+                          />
+                        </div>
+                      )}
+                      {item.title === "SMS Alerts" && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs">Enable SMS alerts</span>
+                          <CustomSwitch
+                            checked={smsAlerts}
+                            onCheckedChange={setSmsAlerts}
+                          />
+                        </div>
+                      )}
+                      {item.title === "Two-Factor Authentication" && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs">Enable two-factor authentication</span>
+                          <CustomSwitch
+                            checked={twoFactorAuth}
+                            onCheckedChange={setTwoFactorAuth}
+                          />
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-              <Progress value={92} className="mt-2 h-1" />
-            </CardContent>
-          </Card>
-          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">Notifications</p>
-                  <p className="text-xl font-bold mt-0.5">3 Active</p>
-                </div>
-                <div className="p-2 rounded-full bg-[#FF4F59]/10">
-                  <BellRing className="h-4 w-4 text-[#FF4F59]" />
-                </div>
-              </div>
-              <Progress value={60} className="mt-2 h-1" />
-            </CardContent>
-          </Card>
-          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground">System</p>
-                  <p className="text-xl font-bold mt-0.5">All Good</p>
-                </div>
-                <div className="p-2 rounded-full bg-[#FF4F59]/10">
-                  <Zap className="h-4 w-4 text-[#FF4F59]" />
-                </div>
-              </div>
-              <Progress value={100} className="mt-2 h-1" />
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Settings Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Account Settings */}
-          <div className="lg:col-span-2 space-y-4">
-            <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-              <CardHeader className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="p-1.5 rounded-lg bg-[#FF4F59]/10">
-                      <User className="h-4 w-4 text-[#FF4F59]" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-base">Account Settings</CardTitle>
-                      <CardDescription className="text-xs">Manage your account preferences</CardDescription>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-                    Edit
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-full bg-[#FF4F59]/10">
-                        <Mail className="h-3.5 w-3.5 text-[#FF4F59]" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Email Address</h3>
-                        <p className="text-xs text-muted-foreground">john.doe@example.com</p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground h-7 w-7 p-0">
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-full bg-[#FF4F59]/10">
-                        <Smartphone className="h-3.5 w-3.5 text-[#FF4F59]" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Phone Number</h3>
-                        <p className="text-xs text-muted-foreground">+1 (555) 123-4567</p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground h-7 w-7 p-0">
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div className="flex items-center space-x-2">
-                      <div className="p-1.5 rounded-full bg-[#FF4F59]/10">
-                        <Globe className="h-3.5 w-3.5 text-[#FF4F59]" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Language & Region</h3>
-                        <p className="text-xs text-muted-foreground">English (US)</p>
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-muted-foreground h-7 w-7 p-0">
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-              <CardHeader className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="p-1.5 rounded-lg bg-[#FF4F59]/10">
-                      <Bell className="h-4 w-4 text-[#FF4F59]" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-base">Notification Preferences</CardTitle>
-                      <CardDescription className="text-xs">Manage your notification settings</CardDescription>
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">Email Notifications</h3>
-                      <p className="text-xs text-muted-foreground">Receive updates via email</p>
-                    </div>
-                    <CustomSwitch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">Push Notifications</h3>
-                      <p className="text-xs text-muted-foreground">Get instant alerts on your devices</p>
-                    </div>
-                    <CustomSwitch checked={pushNotifications} onCheckedChange={setPushNotifications} />
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">SMS Alerts</h3>
-                      <p className="text-xs text-muted-foreground">Receive important updates via SMS</p>
-                    </div>
-                    <CustomSwitch checked={smsAlerts} onCheckedChange={setSmsAlerts} />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* System Settings */}
-          <div className="space-y-4">
-            <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-              <CardHeader className="p-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-1.5 rounded-lg bg-[#FF4F59]/10">
-                    <Settings className="h-4 w-4 text-[#FF4F59]" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-base">System Preferences</CardTitle>
-                    <CardDescription className="text-xs">Customize your experience</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">Dark Mode</h3>
-                      <p className="text-xs text-muted-foreground">Enable dark mode for better visibility</p>
-                    </div>
-                    <CustomSwitch checked={darkMode} onCheckedChange={setDarkMode} />
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">Auto-save Changes</h3>
-                      <p className="text-xs text-muted-foreground">Automatically save your changes</p>
-                    </div>
-                    <CustomSwitch checked={autoSave} onCheckedChange={setAutoSave} />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
-              <CardHeader className="p-4">
-                <div className="flex items-center space-x-2">
-                  <div className="p-1.5 rounded-lg bg-[#FF4F59]/10">
-                    <Lock className="h-4 w-4 text-[#FF4F59]" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-base">Security</CardTitle>
-                    <CardDescription className="text-xs">Manage your security settings</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">Two-Factor Authentication</h3>
-                      <p className="text-xs text-muted-foreground">Add an extra layer of security</p>
-                    </div>
-                    <CustomSwitch checked={twoFactorAuth} onCheckedChange={setTwoFactorAuth} />
-                  </div>
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
-                    <div>
-                      <h3 className="text-sm font-medium">Password</h3>
-                      <p className="text-xs text-muted-foreground">Last changed 30 days ago</p>
-                    </div>
-                    <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-                      Change
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            </div>
+          ))}
         </div>
       </div>
       

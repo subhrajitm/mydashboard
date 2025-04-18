@@ -55,12 +55,6 @@ const navItems = [
     badge: 5,
     showBadgeInCompact: true,
   },
-  { 
-    id: "settings", 
-    icon: Settings, 
-    label: "Settings", 
-    href: "/settings",
-  },
 ]
 
 export default function Sidebar() {
@@ -203,18 +197,17 @@ export default function Sidebar() {
       {/* Sidebar Footer */}
       <div className="p-4 border-t border-white/10 dark:border-gray-700/10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+          <Link href="/settings" className="flex items-center gap-2 group">
+            <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 group-hover:bg-[#FF4F59]/10 transition-colors">
+              <Settings className="h-5 w-5 group-hover:text-[#FF4F59] transition-colors" />
+            </div>
             {isExpanded && (
               <div>
-                <p className="text-sm font-medium">Oliver</p>
-                <p className="text-xs text-muted-foreground/80">Admin</p>
+                <p className="text-sm font-medium group-hover:text-[#FF4F59] transition-colors">Settings</p>
+                <p className="text-xs text-muted-foreground/80 group-hover:text-[#FF4F59]/80 transition-colors">Manage preferences</p>
               </div>
             )}
-          </div>
+          </Link>
           {mounted && (
             <Button
               variant="ghost"
