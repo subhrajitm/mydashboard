@@ -131,33 +131,50 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-              Settings
-            </h1>
-            <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-              Admin
-            </Badge>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Manage your account settings and preferences
-          </p>
+      <div className="relative rounded-2xl overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 -z-10">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#FF4F59]/5 via-[#FFAD28]/5 to-transparent" />
+          
+          {/* Animated diagonal patterns */}
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,#FF4F59/5_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern" />
+          <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,#FFAD28/5_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern" style={{ animationDelay: '1s' }} />
+          
+          {/* Subtle noise texture */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-10" />
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-            <HelpCircle className="h-4 w-4 mr-1" />
-            Help
-          </Button>
-          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-            <Save className="h-4 w-4 mr-1" />
-            Save
-          </Button>
-          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-            <History className="h-4 w-4 mr-1" />
-            History
-          </Button>
+
+        <div className="flex flex-col space-y-4 p-6 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-gray-300/30 dark:border-gray-600/30">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                  Settings
+                </h1>
+                <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                  Admin
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Manage your account settings and preferences
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl">
+                <HelpCircle className="h-4 w-4 mr-1" />
+                Help
+              </Button>
+              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl">
+                <Save className="h-4 w-4 mr-1" />
+                Save
+              </Button>
+              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl">
+                <History className="h-4 w-4 mr-1" />
+                History
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -171,7 +188,7 @@ export default function SettingsPage() {
               placeholder="Search settings..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 h-9 pl-8 pr-8 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
+              className="w-64 h-9 pl-8 pr-8 bg-white/20 dark:bg-gray-800/20 border-gray-300/30 dark:border-gray-600/30 focus:border-gray-400/40 dark:focus:border-gray-500/40 focus:ring-1 focus:ring-gray-300/20 dark:focus:ring-gray-600/20 transition-all duration-200"
             />
             {searchQuery && (
               <div className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -193,7 +210,7 @@ export default function SettingsPage() {
                 variant={activeCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setActiveCategory(category)}
-                className={activeCategory === category ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                className={activeCategory === category ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "bg-white/10 dark:bg-gray-800/10 border-gray-300/30 dark:border-gray-600/30 rounded-2xl"}
               >
                 {category}
               </Button>
