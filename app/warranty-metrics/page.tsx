@@ -178,11 +178,36 @@ const recentClaims = [
   { id: 4, product: "Product D", date: "2024-03-12", status: "Pending" },
 ]
 
+const modelData = [
+  { model: "Model1", creditsPaid: 152, disallowedAmount: 81 },
+  { model: "Model2", creditsPaid: 22, disallowedAmount: 67 },
+  { model: "Model3", creditsPaid: 139, disallowedAmount: 65 },
+  { model: "Model4", creditsPaid: 474, disallowedAmount: 371 },
+  { model: "Model5", creditsPaid: 116, disallowedAmount: 238 },
+  { model: "Model6", creditsPaid: 35, disallowedAmount: 11 },
+  { model: "Model7", creditsPaid: 2, disallowedAmount: 0 },
+  { model: "Model8", creditsPaid: 462, disallowedAmount: 544 },
+  { model: "Model9", creditsPaid: 4, disallowedAmount: 2 },
+]
+
+const avgTATData = [
+  { model: "Model1", avgTAT: 12 },
+  { model: "Model2", avgTAT: 8 },
+  { model: "Model3", avgTAT: 15 },
+  { model: "Model4", avgTAT: 10 },
+  { model: "Model5", avgTAT: 14 },
+  { model: "Model6", avgTAT: 7 },
+  { model: "Model7", avgTAT: 9 },
+  { model: "Model8", avgTAT: 11 },
+  { model: "Model9", avgTAT: 6 },
+]
+
 export default function WarrantyMetrics() {
   const [activeTimeframe, setActiveTimeframe] = useState("1w")
   const [searchQuery, setSearchQuery] = useState("")
   const [activeView, setActiveView] = useState("overview")
   const [selectedShop, setSelectedShop] = useState("all")
+  const [showAvgTAT, setShowAvgTAT] = useState(false)
   const [chartType, setChartType] = useState("bar")
 
   const prepareShopChartData = () => {
@@ -228,10 +253,10 @@ export default function WarrantyMetrics() {
         </div>
         <div className="flex items-center gap-2">
           <Select value={activeTimeframe} onValueChange={setActiveTimeframe}>
-            <SelectTrigger className="w-[140px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
+            <SelectTrigger className="w-[140px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
               <SelectValue placeholder="Select timeframe" />
             </SelectTrigger>
-            <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-white/20">
+            <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
               <SelectItem value="1w">Last 7 days</SelectItem>
               <SelectItem value="1m">Last 30 days</SelectItem>
               <SelectItem value="3m">Last 90 days</SelectItem>
@@ -244,13 +269,13 @@ export default function WarrantyMetrics() {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-7 h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20"
+              className="pl-7 h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20"
             />
             {searchQuery && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5 hover:bg-white/20 dark:hover:bg-gray-800/20"
                 onClick={() => setSearchQuery("")}
               >
                 <X className="h-3 w-3" />
@@ -261,18 +286,18 @@ export default function WarrantyMetrics() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Overview</TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Analytics</TabsTrigger>
-          <TabsTrigger value="reports" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Reports</TabsTrigger>
-          <TabsTrigger value="settings" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Settings</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 rounded-xl">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30 rounded-lg">Overview</TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30 rounded-lg">Analytics</TabsTrigger>
+          <TabsTrigger value="reports" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30 rounded-lg">Reports</TabsTrigger>
+          <TabsTrigger value="updates" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30 rounded-lg">Updates</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           {/* Summary Cards */}
           <div className="grid grid-cols-4 gap-4">
             {warrantyStats.map((stat, index) => (
-              <Card key={index} className="backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow">
+              <Card key={index} className="backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
@@ -298,53 +323,83 @@ export default function WarrantyMetrics() {
 
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Warranty Claims Chart */}
-            <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
+            {/* Credit Paid vs Disallowance Chart */}
+            <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-white/10 dark:border-gray-700/10">
                 <div>
-                  <CardTitle className="text-lg">Warranty Claims</CardTitle>
-                  <CardDescription className="text-xs">Claims by product category</CardDescription>
+                  <CardTitle className="text-lg">
+                    {showAvgTAT ? "Credit Paid - Avg TAT" : "Credit Paid Vs Disallowance"}
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    {showAvgTAT ? "Average turnaround time by model" : "Comparison by model"}
+                  </CardDescription>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
-                      {chartType === 'bar' ? <BarChart3 className="h-3 w-3" /> : <LineChart className="h-3 w-3" />}
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-white/20">
-                    <DropdownMenuItem onClick={() => setChartType('bar')}>
-                      <BarChart3 className="h-3 w-3 mr-2" />
-                      Bar Chart
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setChartType('line')}>
-                      <LineChart className="h-3 w-3 mr-2" />
-                      Line Chart
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAvgTAT(!showAvgTAT)}
+                    className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors"
+                  >
+                    {showAvgTAT ? "Show Disallowance" : "Show Avg TAT"}
+                  </Button>
+                </div>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="h-[250px]">
+              <CardContent className="pt-4 px-4">
+                <div className="h-[300px] bg-white/5 dark:bg-gray-900/5 rounded-lg p-2 border border-white/10 dark:border-gray-700/10">
                   <ResponsiveContainer width="100%" height="100%">
-                    {chartType === 'bar' ? (
-                      <BarChart data={warrantyData}>
-                        <XAxis dataKey="shop" fontSize={10} />
-                        <YAxis fontSize={10} />
-                        <RechartsTooltip content={<CustomTooltip />} />
-                        <Bar dataKey="approved" fill="#4CAF50" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="pending" fill="#FFC107" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="rejected" fill="#F44336" radius={[4, 4, 0, 0]} />
+                    {!showAvgTAT ? (
+                      <BarChart data={modelData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" />
+                        <XAxis dataKey="model" fontSize={10} stroke="currentColor" strokeOpacity={0.5} />
+                        <YAxis
+                          fontSize={10}
+                          tickFormatter={(value) => `${value}M`}
+                          domain={[0, 600]}
+                          ticks={[0, 100, 200, 300, 400, 500, 600]}
+                          stroke="currentColor"
+                          strokeOpacity={0.5}
+                        />
+                        <RechartsTooltip
+                          content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                              return (
+                                <div className="bg-white/90 dark:bg-gray-800/90 p-2 rounded-lg shadow-xl border border-white/20 dark:border-gray-700/20 backdrop-blur-xl">
+                                  <p className="text-sm font-medium">{payload[0].payload.model}</p>
+                                  {payload.map((entry, index) => (
+                                    <p key={index} className="text-xs" style={{ color: entry.color }}>
+                                      {entry.name}: {entry.value}M
+                                    </p>
+                                  ))}
+                                </div>
+                              )
+                            }
+                            return null
+                          }}
+                        />
+                        <Bar dataKey="creditsPaid" name="Credits Paid" fill="#1a237e" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="disallowedAmount" name="Disallowed Amount" fill="#03a9f4" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     ) : (
-                      <RechartsLineChart data={warrantyData}>
-                        <XAxis dataKey="shop" fontSize={10} />
-                        <YAxis fontSize={10} />
-                        <RechartsTooltip content={<CustomTooltip />} />
-                        <Line type="monotone" dataKey="approved" stroke="#4CAF50" strokeWidth={2} />
-                        <Line type="monotone" dataKey="pending" stroke="#FFC107" strokeWidth={2} />
-                        <Line type="monotone" dataKey="rejected" stroke="#F44336" strokeWidth={2} />
-                      </RechartsLineChart>
+                      <BarChart data={avgTATData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" />
+                        <XAxis dataKey="model" fontSize={10} stroke="currentColor" strokeOpacity={0.5} />
+                        <YAxis fontSize={10} stroke="currentColor" strokeOpacity={0.5} />
+                        <RechartsTooltip
+                          content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                              return (
+                                <div className="bg-white/90 dark:bg-gray-800/90 p-2 rounded-lg shadow-xl border border-white/20 dark:border-gray-700/20 backdrop-blur-xl">
+                                  <p className="text-sm font-medium">{payload[0].payload.model}</p>
+                                  <p className="text-xs">Avg TAT: {payload[0].value} days</p>
+                                </div>
+                              )
+                            }
+                            return null
+                          }}
+                        />
+                        <Bar dataKey="avgTAT" name="Average TAT" fill="#1a237e" radius={[4, 4, 0, 0]} />
+                      </BarChart>
                     )}
                   </ResponsiveContainer>
                 </div>
@@ -352,17 +407,18 @@ export default function WarrantyMetrics() {
             </Card>
 
             {/* Resolution Time Chart */}
-            <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5">
-              <CardHeader className="pb-2">
+            <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+              <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
                 <CardTitle className="text-lg">Resolution Time</CardTitle>
                 <CardDescription className="text-xs">Average time to resolve claims</CardDescription>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="h-[250px]">
+              <CardContent className="pt-4 px-4">
+                <div className="h-[300px] bg-white/5 dark:bg-gray-900/5 rounded-lg p-2 border border-white/10 dark:border-gray-700/10">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={resolutionData}>
-                      <XAxis dataKey="month" fontSize={10} />
-                      <YAxis fontSize={10} />
+                      <XAxis dataKey="month" fontSize={10} stroke="currentColor" strokeOpacity={0.5} />
+                      <YAxis fontSize={10} stroke="currentColor" strokeOpacity={0.5} />
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" />
                       <RechartsTooltip content={<CustomTooltip />} />
                       <Area type="monotone" dataKey="days" stroke="#FFAD28" fill="#FFAD28/20" />
                     </AreaChart>
@@ -373,21 +429,21 @@ export default function WarrantyMetrics() {
           </div>
 
           {/* Recent Claims */}
-          <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-white/10 dark:border-gray-700/10">
               <div>
                 <CardTitle className="text-lg">Recent Claims</CardTitle>
                 <CardDescription className="text-xs">Latest warranty claims and their status</CardDescription>
               </div>
-              <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
+              <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
                 <Download className="h-3 w-3" />
                 Export
               </Button>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="pt-4">
               <div className="space-y-2">
                 {recentClaims.map((claim) => (
-                  <div key={claim.id} className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200">
+                  <div key={claim.id} className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200">
                     <div className="flex items-center space-x-3">
                       <div className="p-1.5 rounded-full bg-[#FF4F59]/10">
                         <FileText className="h-3 w-3 text-[#FF4F59]" />
@@ -397,7 +453,7 @@ export default function WarrantyMetrics() {
                         <p className="text-xs text-muted-foreground">{claim.date}</p>
                       </div>
                     </div>
-                    <Badge className={getStatusColor(claim.status)}>
+                    <Badge className={`${getStatusColor(claim.status)} border border-white/20 dark:border-gray-700/20`}>
                       {claim.status}
                     </Badge>
                   </div>
