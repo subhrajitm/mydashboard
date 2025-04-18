@@ -40,7 +40,7 @@ import {
   Area,
   AreaChart,
 } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
@@ -134,6 +134,22 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null
 }
 
+const resolutionData = [
+  { month: "Jan", days: 5 },
+  { month: "Feb", days: 4 },
+  { month: "Mar", days: 6 },
+  { month: "Apr", days: 3 },
+  { month: "May", days: 4 },
+  { month: "Jun", days: 5 },
+]
+
+const recentClaims = [
+  { id: 1, product: "Product A", date: "2024-03-15", status: "Resolved" },
+  { id: 2, product: "Product B", date: "2024-03-14", status: "Pending" },
+  { id: 3, product: "Product C", date: "2024-03-13", status: "Resolved" },
+  { id: 4, product: "Product D", date: "2024-03-12", status: "Pending" },
+]
+
 export default function WarrantyMetrics() {
   const [activeTimeframe, setActiveTimeframe] = useState("1w")
   const [searchQuery, setSearchQuery] = useState("")
@@ -188,59 +204,88 @@ export default function WarrantyMetrics() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {warrantyStats.map((stat) => (
-          <Card key={stat.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+      <div className="grid gap-8">
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {warrantyStats.map((stat) => (
+            <Card key={stat.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Warranty Claims Chart */}
+          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+            <CardHeader>
+              <CardTitle>Warranty Claims</CardTitle>
+              <CardDescription>Claims by product category</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.description}</p>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={warrantyData}>
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <RechartsTooltip content={<CustomTooltip />} />
+                    <Bar dataKey="claims" fill="#FF4F59" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
+          {/* Resolution Time Chart */}
+          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+            <CardHeader>
+              <CardTitle>Resolution Time</CardTitle>
+              <CardDescription>Average time to resolve claims</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={resolutionData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <RechartsTooltip content={<CustomTooltip />} />
+                    <Line type="monotone" dataKey="days" stroke="#FFAD28" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Claims */}
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
           <CardHeader>
-            <CardTitle>Warranty Status by Shop</CardTitle>
+            <CardTitle>Recent Claims</CardTitle>
+            <CardDescription>Latest warranty claims and their status</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={warrantyData}>
-                  <XAxis dataKey="shop" />
-                  <YAxis />
-                  <RechartsTooltip content={<CustomTooltip />} />
-                  <Bar dataKey="approved" fill="#FF4F59" />
-                  <Bar dataKey="pending" fill="#FFAD28" />
-                  <Bar dataKey="rejected" fill="#444744" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
-          <CardHeader>
-            <CardTitle>Detailed Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {warrantyData.map((shop) => (
-                <div key={shop.shop} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium">{shop.shop}</h3>
-                    <div className="flex gap-2">
-                      <Badge variant="destructive">{shop.approved} Approved</Badge>
-                      <Badge variant="outline">{shop.pending} Pending</Badge>
-                      <Badge variant="secondary">{shop.rejected} Rejected</Badge>
+            <div className="space-y-4">
+              {recentClaims.map((claim) => (
+                <div key={claim.id} className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-2 rounded-full bg-[#FF4F59]/10">
+                      <FileText className="h-4 w-4 text-[#FF4F59]" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{claim.product}</p>
+                      <p className="text-sm text-muted-foreground">{claim.date}</p>
                     </div>
                   </div>
-                  <Progress value={(shop.approved / (shop.approved + shop.pending + shop.rejected)) * 100} />
+                  <Badge variant={claim.status === 'Resolved' ? 'default' : 'secondary'}>
+                    {claim.status}
+                  </Badge>
                 </div>
               ))}
             </div>

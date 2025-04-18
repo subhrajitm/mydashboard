@@ -1,244 +1,197 @@
 "use client"
 
-import { Bell, CheckCircle2, AlertCircle, Clock, Filter, Search, Trash2 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Search, CheckCircle2, AlertCircle, Info, X, Bell } from "lucide-react"
+import { useState } from "react"
+import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 const notifications = [
   {
     id: 1,
-    title: "New Warranty Claim",
-    description: "Shop1 has submitted a new warranty claim for review",
-    time: "2 minutes ago",
-    status: "unread",
-    type: "warranty",
+    title: "New Invoice Received",
+    description: "Invoice #INV-2024-001 has been received from Client A",
+    date: "2m ago",
+    type: "success",
+    icon: CheckCircle2,
+    read: false,
   },
   {
     id: 2,
-    title: "Invoice Approved",
-    description: "Final invoice for Engine #12345 has been approved",
-    time: "1 hour ago",
-    status: "read",
-    type: "invoice",
+    title: "Payment Overdue",
+    description: "Payment for Invoice #INV-2024-002 is overdue by 5 days",
+    date: "1h ago",
+    type: "warning",
+    icon: AlertCircle,
+    read: false,
   },
   {
     id: 3,
     title: "System Update",
     description: "New features have been added to the dashboard",
-    time: "3 hours ago",
-    status: "read",
-    type: "system",
+    date: "3h ago",
+    type: "info",
+    icon: Info,
+    read: true,
   },
   {
     id: 4,
-    title: "Payment Received",
-    description: "Payment for Invoice #67890 has been received",
-    time: "5 hours ago",
-    status: "read",
-    type: "payment",
+    title: "New Client Added",
+    description: "Client B has been added to your account",
+    date: "1d ago",
+    type: "success",
+    icon: CheckCircle2,
+    read: true,
   },
   {
     id: 5,
-    title: "Maintenance Alert",
-    description: "Scheduled maintenance for Shop2's equipment",
-    time: "1 day ago",
-    status: "read",
-    type: "maintenance",
+    title: "Payment Received",
+    description: "Payment of $2,500.00 has been received for Invoice #INV-2024-003",
+    date: "2d ago",
+    type: "success",
+    icon: CheckCircle2,
+    read: true,
   },
 ]
 
-const NotificationIcon = ({ type }: { type: string }) => {
-  switch (type) {
-    case "warranty":
-      return <AlertCircle className="h-5 w-5 text-[#FF4F59]" />
-    case "invoice":
-      return <CheckCircle2 className="h-5 w-5 text-[#FFAD28]" />
-    case "system":
-      return <Bell className="h-5 w-5 text-[#444744]" />
-    case "payment":
-      return <CheckCircle2 className="h-5 w-5 text-green-500" />
-    case "maintenance":
-      return <Clock className="h-5 w-5 text-blue-500" />
-    default:
-      return <Bell className="h-5 w-5 text-[#444744]" />
-  }
+const typeColors = {
+  success: "bg-green-500/10 text-green-500",
+  warning: "bg-yellow-500/10 text-yellow-500",
+  info: "bg-blue-500/10 text-blue-500",
 }
 
 export default function NotificationsPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filter, setFilter] = useState("all")
+
+  const filteredNotifications = notifications.filter((notification) => {
+    const matchesSearch = notification.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      notification.description.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesFilter = filter === "all" || 
+      (filter === "unread" && !notification.read) ||
+      (filter === "read" && notification.read)
+    return matchesSearch && matchesFilter
+  })
+
   return (
     <div className="space-y-8 p-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-            Notifications
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Stay updated with the latest activities and alerts
-          </p>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                Notifications
+              </h1>
+              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                {notifications.filter(n => !n.read).length} Unread
+              </Badge>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Manage your notifications and stay updated with important alerts
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <CheckCircle2 className="h-4 w-4 mr-2" />
+              Mark All as Read
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <X className="h-4 w-4 mr-2" />
+              Clear All
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
-          <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-            <Trash2 className="h-4 w-4 mr-2" />
-            Clear All
-          </Button>
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search notifications..."
-          className="pl-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40"
-        />
-      </div>
-
-      {/* Tabs */}
-      <Tabs defaultValue="all" className="space-y-6">
-        <TabsList className="bg-white/50 border border-[#FF4F59]/20">
-          <TabsTrigger value="all" className="data-[state=active]:bg-[#FF4F59] data-[state=active]:text-white">
-            All
-          </TabsTrigger>
-          <TabsTrigger value="unread" className="data-[state=active]:bg-[#FF4F59] data-[state=active]:text-white">
-            Unread
-          </TabsTrigger>
-          <TabsTrigger value="warranty" className="data-[state=active]:bg-[#FF4F59] data-[state=active]:text-white">
-            Warranty
-          </TabsTrigger>
-          <TabsTrigger value="invoice" className="data-[state=active]:bg-[#FF4F59] data-[state=active]:text-white">
-            Invoice
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all" className="space-y-6">
-          {notifications.map((notification) => (
-            <Card 
-              key={notification.id} 
-              className={`bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md ${
-                notification.status === "unread" ? "bg-[#FF4F59]/5" : ""
-              }`}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-                    <NotificationIcon type={notification.type} />
-                  </div>
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium">{notification.title}</h3>
-                      <span className="text-sm text-muted-foreground">{notification.time}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{notification.description}</p>
-                  </div>
-                  {notification.status === "unread" && (
-                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                      New
-                    </Badge>
-                  )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
+              </div>
+              <Input
+                placeholder="Search notifications..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-72 pl-10 pr-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
+              />
+              {searchQuery && (
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:bg-[#FF4F59]/10"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <X className="h-4 w-4 text-muted-foreground" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {["All", "Unread", "Read"].map((category) => (
+                <Button
+                  key={category}
+                  variant={filter === category.toLowerCase() ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFilter(category.toLowerCase())}
+                  className={filter === category.toLowerCase() ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Bell className="h-4 w-4 mr-2" />
+              Notification Settings
+            </Button>
+          </div>
+        </div>
+      </div>
 
-        <TabsContent value="unread" className="space-y-6">
-          {notifications
-            .filter(notification => notification.status === "unread")
-            .map((notification) => (
-              <Card 
-                key={notification.id} 
-                className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-                      <NotificationIcon type={notification.type} />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium">{notification.title}</h3>
-                        <span className="text-sm text-muted-foreground">{notification.time}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{notification.description}</p>
-                    </div>
-                    <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                      New
-                    </Badge>
+      {/* Notifications List */}
+      <div className="space-y-2">
+        {filteredNotifications.map((notification) => (
+          <Card
+            key={notification.id}
+            className={cn(
+              "group hover:scale-[1.01] transition-all duration-200",
+              !notification.read && "border-l-2 border-[#FF4F59]"
+            )}
+          >
+            <CardContent className="p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className={cn(
+                  "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
+                  typeColors[notification.type as keyof typeof typeColors]
+                )}>
+                  <notification.icon className="h-4 w-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-sm font-medium truncate">{notification.title}</h3>
+                    <span className="text-xs text-muted-foreground/60 whitespace-nowrap">{notification.date}</span>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-        </TabsContent>
-
-        <TabsContent value="warranty" className="space-y-6">
-          {notifications
-            .filter(notification => notification.type === "warranty")
-            .map((notification) => (
-              <Card 
-                key={notification.id} 
-                className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-                      <NotificationIcon type={notification.type} />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium">{notification.title}</h3>
-                        <span className="text-sm text-muted-foreground">{notification.time}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{notification.description}</p>
-                    </div>
-                    {notification.status === "unread" && (
-                      <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                        New
-                      </Badge>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-        </TabsContent>
-
-        <TabsContent value="invoice" className="space-y-6">
-          {notifications
-            .filter(notification => notification.type === "invoice")
-            .map((notification) => (
-              <Card 
-                key={notification.id} 
-                className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-                      <NotificationIcon type={notification.type} />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium">{notification.title}</h3>
-                        <span className="text-sm text-muted-foreground">{notification.time}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{notification.description}</p>
-                    </div>
-                    {notification.status === "unread" && (
-                      <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                        New
-                      </Badge>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-        </TabsContent>
-      </Tabs>
+                  <p className="text-xs text-muted-foreground/80 truncate">
+                    {notification.description}
+                  </p>
+                </div>
+                {!notification.read && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 rounded-full bg-white/10 dark:bg-gray-800/10 hover:bg-white/20 dark:hover:bg-gray-800/20 shrink-0"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 } 

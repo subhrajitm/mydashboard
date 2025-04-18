@@ -1,7 +1,7 @@
 "use client"
 
 import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc, X } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import {
@@ -13,15 +13,39 @@ import {
   Tooltip as RechartsTooltip,
   Legend,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 
 const invoiceData = [
-  { shop: "Shop1", engines: 12, due: 10, issued: 1, upcoming: 1 },
-  { shop: "Shop2", engines: 7, due: 5, issued: 1, upcoming: 1 },
-  { shop: "Shop3", engines: 4, due: 1, issued: 3, upcoming: 0 }
+  { name: "Due", value: 30, color: "#FF4F59" },
+  { name: "Issued", value: 45, color: "#FFAD28" },
+  { name: "Upcoming", value: 25, color: "#444744" },
+]
+
+const paymentData = [
+  { shop: "Shop A", paid: 12, pending: 3 },
+  { shop: "Shop B", paid: 8, pending: 5 },
+  { shop: "Shop C", paid: 15, pending: 2 },
+  { shop: "Shop D", paid: 10, pending: 4 },
+]
+
+interface RecentInvoice {
+  id: number
+  shop: string
+  date: string
+  status: 'Paid' | 'Pending'
+}
+
+const recentInvoices: RecentInvoice[] = [
+  { id: 1, shop: "Shop A", date: "2024-03-15", status: "Paid" },
+  { id: 2, shop: "Shop B", date: "2024-03-14", status: "Pending" },
+  { id: 3, shop: "Shop C", date: "2024-03-13", status: "Paid" },
+  { id: 4, shop: "Shop D", date: "2024-03-12", status: "Pending" },
 ]
 
 interface InvoiceStat {
@@ -119,59 +143,100 @@ export default function FinalInvoiceStatusPage() {
         </div>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {invoiceStats.map((stat) => (
-          <Card key={stat.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+      <div className="grid gap-8">
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {invoiceStats.map((stat) => (
+            <Card key={stat.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Invoice Status Chart */}
+          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+            <CardHeader>
+              <CardTitle>Invoice Status</CardTitle>
+              <CardDescription>Distribution of invoice statuses</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">{stat.description}</p>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={invoiceData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      fill="#FF4F59"
+                      label
+                    >
+                      {invoiceData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
+          {/* Payment Status Chart */}
+          <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+            <CardHeader>
+              <CardTitle>Payment Status</CardTitle>
+              <CardDescription>Payment status by shop</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={paymentData}>
+                    <XAxis dataKey="shop" />
+                    <YAxis />
+                    <RechartsTooltip content={<CustomTooltip />} />
+                    <Bar dataKey="paid" fill="#FF4F59" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="pending" fill="#FFAD28" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent Invoices */}
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
           <CardHeader>
-            <CardTitle>Invoice Status by Shop</CardTitle>
+            <CardTitle>Recent Invoices</CardTitle>
+            <CardDescription>Latest invoice activities</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={invoiceData}>
-                  <XAxis dataKey="shop" />
-                  <YAxis />
-                  <RechartsTooltip content={<CustomTooltip />} />
-                  <Bar dataKey="due" fill="#FF4F59" />
-                  <Bar dataKey="issued" fill="#FFAD28" />
-                  <Bar dataKey="upcoming" fill="#444744" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border-white/30 shadow-lg shadow-black/5">
-          <CardHeader>
-            <CardTitle>Detailed Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {invoiceData.map((shop) => (
-                <div key={shop.shop} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium">{shop.shop}</h3>
-                    <div className="flex gap-2">
-                      <Badge variant="destructive">{shop.due} Due</Badge>
-                      <Badge variant="outline">{shop.issued} Issued</Badge>
-                      <Badge variant="secondary">{shop.upcoming} Upcoming</Badge>
+            <div className="space-y-4">
+              {recentInvoices.map((invoice) => (
+                <div key={invoice.id} className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-2 rounded-full bg-[#FF4F59]/10">
+                      <FileText className="h-4 w-4 text-[#FF4F59]" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{invoice.shop}</p>
+                      <p className="text-sm text-muted-foreground">{invoice.date}</p>
                     </div>
                   </div>
-                  <Progress value={(shop.due / (shop.due + shop.issued + shop.upcoming)) * 100} />
+                  <Badge variant={invoice.status === 'Paid' ? 'default' : 'secondary'}>
+                    {invoice.status}
+                  </Badge>
                 </div>
               ))}
             </div>

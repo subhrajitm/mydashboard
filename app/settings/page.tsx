@@ -183,77 +183,73 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {settingsSections.map((section) => (
-          <Card 
-            key={section.title} 
-            className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md"
-          >
-            <CardHeader className="border-b border-[#FF4F59]/20">
-              <CardTitle className="flex items-center">
-                <section.icon className="h-5 w-5 mr-2" />
-                {section.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                {section.items.map((item) => (
-                  <div 
-                    key={item.title} 
-                    className="flex items-center justify-between p-4 rounded-lg bg-white/50 border border-[#FF4F59]/10 hover:border-[#FF4F59]/20 transition-all duration-300"
-                  >
-                    <div className="space-y-1">
-                      <h3 className="font-medium">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      className="text-[#FF4F59] hover:text-[#FF4F59] hover:bg-[#FF4F59]/10"
-                    >
-                      {item.action}
-                    </Button>
+      <div className="grid gap-8">
+        {/* Settings Sections */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {settingsSections.map((section) => (
+            <Card key={section.title} className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="p-2 rounded-lg bg-[#FF4F59]/10">
+                    <section.icon className="h-5 w-5 text-[#FF4F59]" />
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                  <CardTitle>{section.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {section.items.map((item) => (
+                    <div key={item.title} className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
+                      <div>
+                        <h3 className="font-medium">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground">{item.description}</p>
+                      </div>
+                      {item.action}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      {/* System Preferences */}
-      <Card className="bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md">
-        <CardHeader className="border-b border-[#FF4F59]/20">
-          <CardTitle className="flex items-center">
-            <Settings className="h-5 w-5 mr-2" />
-            System Preferences
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between p-4 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-              <div className="space-y-1">
-                <h3 className="font-medium">Dark Mode</h3>
-                <p className="text-sm text-muted-foreground">Enable dark mode for better visibility</p>
+        {/* System Preferences */}
+        <Card className="bg-white/30 dark:bg-gray-900/30 backdrop-blur-lg border border-white/30 shadow-lg shadow-black/5">
+          <CardHeader>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-lg bg-[#FF4F59]/10">
+                <Settings className="h-5 w-5 text-[#FF4F59]" />
               </div>
-              <Switch />
+              <CardTitle>System Preferences</CardTitle>
             </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-              <div className="space-y-1">
-                <h3 className="font-medium">Auto-save Changes</h3>
-                <p className="text-sm text-muted-foreground">Automatically save your changes</p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
+                <div>
+                  <h3 className="font-medium">Dark Mode</h3>
+                  <p className="text-sm text-muted-foreground">Enable dark mode for better visibility</p>
+                </div>
+                <Switch />
               </div>
-              <Switch defaultChecked />
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-white/50 border border-[#FF4F59]/10">
-              <div className="space-y-1">
-                <h3 className="font-medium">Email Notifications</h3>
-                <p className="text-sm text-muted-foreground">Receive email notifications</p>
+              <div className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
+                <div>
+                  <h3 className="font-medium">Auto-save Changes</h3>
+                  <p className="text-sm text-muted-foreground">Automatically save your changes</p>
+                </div>
+                <Switch defaultChecked />
               </div>
-              <Switch defaultChecked />
+              <div className="flex items-center justify-between p-4 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
+                <div>
+                  <h3 className="font-medium">Email Notifications</h3>
+                  <p className="text-sm text-muted-foreground">Receive email notifications</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 } 

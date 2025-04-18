@@ -47,6 +47,7 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-width: 288px;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -95,11 +96,11 @@ body {
 
 /* Modern glassy pattern animations */
 @keyframes pattern {
-  0% {
-    background-position: 0% 0%;
+  from {
+    background-position: 0 0;
   }
-  100% {
-    background-position: 100% 100%;
+  to {
+    background-position: 200px 200px;
   }
 }
 
