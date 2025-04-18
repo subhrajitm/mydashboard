@@ -637,36 +637,94 @@ export default function WarrantyMetrics() {
             </Card>
           </div>
 
-          {/* Recent Claims */}
+          {/* Recent Claims Table */}
           <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-white/10 dark:border-gray-700/10">
+            <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-white/10 dark:border-gray-700/10">
               <div>
                 <CardTitle className="text-lg">Recent Claims</CardTitle>
                 <CardDescription className="text-xs">Latest warranty claims and their status</CardDescription>
               </div>
-              <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
-                <Download className="h-3 w-3" />
-                Export
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors"
+                >
+                  <Filter className="h-3 w-3" />
+                  Filter
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors"
+                >
+                  <Download className="h-3 w-3" />
+                  Export
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {recentClaims.map((claim) => (
-                  <div key={claim.id} className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-1.5 rounded-full bg-[#FF4F59]/10">
-                        <FileText className="h-3 w-3 text-[#FF4F59]" />
+                  <div
+                    key={claim.id}
+                    className="group flex items-center justify-between p-4 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-all duration-200 cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="p-2 rounded-full bg-[#FF4F59]/10 group-hover:bg-[#FF4F59]/20 transition-colors">
+                        <FileText className="h-4 w-4 text-[#FF4F59]" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{claim.product}</p>
-                        <p className="text-xs text-muted-foreground">{claim.date}</p>
+                        <p className="text-sm font-medium group-hover:text-[#FF4F59] transition-colors">
+                          {claim.product}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-xs text-muted-foreground">{claim.date}</p>
+                          <span className="text-xs text-muted-foreground">•</span>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">2h ago</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <Badge className={`${getStatusColor(claim.status)} border border-white/20 dark:border-gray-700/20`}>
-                      {claim.status}
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                      <Badge 
+                        className={`${getStatusColor(claim.status)} border border-white/20 dark:border-gray-700/20 group-hover:scale-105 transition-transform`}
+                      >
+                        {claim.status}
+                      </Badge>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 dark:hover:bg-gray-800/20"
+                      >
+                        <ArrowUpRight className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                <p>Showing {recentClaims.length} of {recentClaims.length} claims</p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    disabled
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    disabled
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

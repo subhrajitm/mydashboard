@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight } from "lucide-react"
+import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -438,37 +438,84 @@ export default function DashboardPage() {
 
       {/* Recent Transactions */}
       <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Recent Transactions</CardTitle>
-          <CardDescription className="text-xs">Your latest financial activities</CardDescription>
+        <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-lg">Recent Transactions</CardTitle>
+              <CardDescription className="text-xs">Your latest financial activities</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search transactions..."
+                  className="pl-8 h-8 w-[200px] bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10"
+                />
+              </div>
+              <Button variant="outline" size="sm" className="h-8 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter
+              </Button>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-4">
+        <CardContent className="pt-4">
+          <div className="space-y-3">
             {transactions.map((transaction) => (
               <div
                 key={transaction.id}
-                className="flex items-center justify-between p-4 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200"
+                className="group flex items-center justify-between p-4 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm hover:bg-white/20 dark:hover:bg-gray-800/20 transition-all duration-200 cursor-pointer"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="h-10 w-10 rounded-full bg-white/10 dark:bg-gray-800/10 flex items-center justify-center">
-                    <transaction.icon className="h-5 w-5 text-muted-foreground/80" />
+                  <div className="h-10 w-10 rounded-full bg-white/10 dark:bg-gray-800/10 flex items-center justify-center group-hover:bg-white/20 dark:group-hover:bg-gray-800/20 transition-colors">
+                    <transaction.icon className="h-5 w-5 text-muted-foreground/80 group-hover:text-[#FF4F59] transition-colors" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">{transaction.description}</p>
-                    <p className="text-xs text-muted-foreground/80">{transaction.date}</p>
+                    <p className="text-sm font-medium group-hover:text-[#FF4F59] transition-colors">{transaction.description}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-xs text-muted-foreground/80">{transaction.date}</p>
+                      <span className="text-xs text-muted-foreground/80">•</span>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3 text-muted-foreground/80" />
+                        <span className="text-xs text-muted-foreground/80">2h ago</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium">{transaction.amount}</p>
-                  <Badge
-                    variant={transaction.status === "Completed" ? "default" : "secondary"}
-                    className="mt-1 text-xs"
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm font-medium group-hover:text-[#FF4F59] transition-colors">{transaction.amount}</p>
+                    <Badge
+                      variant={transaction.status === "Completed" ? "default" : "secondary"}
+                      className={`mt-1 text-xs ${
+                        transaction.status === "Completed" 
+                          ? "bg-green-500/10 text-green-500 border-green-500/20" 
+                          : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                      }`}
+                    >
+                      {transaction.status}
+                    </Badge>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 dark:hover:bg-gray-800/20"
                   >
-                    {transaction.status}
-                  </Badge>
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             ))}
+          </div>
+          <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground/60">
+            <p>Showing {transactions.length} of {transactions.length} transactions</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs h-7 px-2 hover:bg-white/10 dark:hover:bg-gray-800/10"
+            >
+              View All
+            </Button>
           </div>
         </CardContent>
       </Card>
