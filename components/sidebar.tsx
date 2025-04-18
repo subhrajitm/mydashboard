@@ -101,18 +101,23 @@ export default function Sidebar() {
       </div>
 
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10 dark:border-gray-700/10">
-        <div className="flex items-center space-x-3">
+      <div className="flex items-center justify-between p-3 border-b border-white/10 dark:border-gray-700/10">
+        <div className="flex items-center gap-3">
           {isExpanded ? (
-            <Link href="/" className="relative h-[50px] w-32">
-              <Image
-                src="/genpact-logo.svg"
-                alt="Genpact Logo"
-                fill
-                className="object-contain dark:filter-none filter invert"
-                priority
-              />
-            </Link>
+            <>
+              <Link href="/" className="relative h-[50px] w-32">
+                <Image
+                  src="/genpact-logo.svg"
+                  alt="Genpact Logo"
+                  fill
+                  className="object-contain dark:filter-none filter invert"
+                  priority
+                />
+              </Link>
+              <div className="flex items-center">
+                <span className="text-base font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">WCA</span>
+              </div>
+            </>
           ) : (
             <Link href="/" className="relative h-[50px] w-[50px]">
               <Image
@@ -130,10 +135,10 @@ export default function Sidebar() {
           size="icon"
           onClick={() => setIsExpanded(!isExpanded)}
           onKeyDown={(e) => handleKeyDown(e, () => setIsExpanded(!isExpanded))}
-          className="hover:bg-[#FF4F59]/10"
+          className="h-7 w-7 hover:bg-[#FF4F59]/10"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         >
-          {isExpanded ? <ChevronLeft /> : <ChevronRight />}
+          {isExpanded ? <ChevronLeft className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
         </Button>
       </div>
 

@@ -351,8 +351,8 @@ export default function WarrantyMetrics() {
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-            Warranty Metrics
-          </h1>
+          Warranty Metrics
+        </h1>
           <p className="text-sm text-muted-foreground">
             Track and analyze warranty claims and performance metrics
           </p>
@@ -495,18 +495,18 @@ export default function WarrantyMetrics() {
                 </div>
               </CardHeader>
               <CardContent className="pt-4">
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
+          <div className="h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={sortedModelData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" />
-                      <XAxis 
+                <XAxis 
                         dataKey="model" 
                         fontSize={10} 
                         stroke="currentColor" 
                         strokeOpacity={0.5}
                         tickLine={false}
-                      />
-                      <YAxis
+                />
+                <YAxis 
                         fontSize={10}
                         tickFormatter={(value) => `${value}M`}
                         domain={[0, 600]}
@@ -514,23 +514,23 @@ export default function WarrantyMetrics() {
                         stroke="currentColor"
                         strokeOpacity={0.5}
                         tickLine={false}
-                      />
-                      <RechartsTooltip content={<CustomTooltip />} />
+                />
+                <RechartsTooltip content={<CustomTooltip />} />
                       <Bar 
                         dataKey="creditsPaid" 
                         name="Credits Paid" 
                         fill="#1a237e" 
-                        radius={[4, 4, 0, 0]}
-                      />
-                      <Bar 
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
                         dataKey="disallowedAmount" 
                         name="Disallowed Amount" 
                         fill="#03a9f4" 
-                        radius={[4, 4, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
               </CardContent>
             </Card>
 
@@ -551,28 +551,28 @@ export default function WarrantyMetrics() {
                     >
                       {showAvgTAT ? "Hide Average" : "Show Average"}
                     </Button>
-                  </div>
-                </div>
+          </div>
+      </div>
               </CardHeader>
               <CardContent className="pt-4">
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={resolutionData}>
-                      <defs>
+              <defs>
                         <linearGradient id="colorDays" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#FFAD28" stopOpacity={0.2}/>
                           <stop offset="95%" stopColor="#FFAD28" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <XAxis 
-                        dataKey="month" 
+                </linearGradient>
+              </defs>
+              <XAxis 
+                dataKey="month" 
                         fontSize={10} 
                         stroke="currentColor" 
                         strokeOpacity={0.5}
                         tickLine={false}
                         axisLine={false}
-                      />
-                      <YAxis
+              />
+              <YAxis 
                         fontSize={10}
                         stroke="currentColor"
                         strokeOpacity={0.5}
@@ -599,9 +599,9 @@ export default function WarrantyMetrics() {
                           }
                           return null;
                         }}
-                      />
-                      <Area
-                        type="monotone"
+              />
+              <Area 
+                type="monotone" 
                         dataKey="days"
                         stroke="#FFAD28"
                         fill="url(#colorDays)"
@@ -630,9 +630,9 @@ export default function WarrantyMetrics() {
                           }}
                         />
                       )}
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
               </CardContent>
             </Card>
           </div>
@@ -643,7 +643,7 @@ export default function WarrantyMetrics() {
               <div>
                 <CardTitle className="text-lg">Recent Claims</CardTitle>
                 <CardDescription className="text-xs">Latest warranty claims and their status</CardDescription>
-              </div>
+        </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -655,7 +655,7 @@ export default function WarrantyMetrics() {
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
+              size="sm"
                   className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors"
                 >
                   <Download className="h-3 w-3" />
@@ -838,8 +838,8 @@ export default function WarrantyMetrics() {
                   <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 hover:bg-white/30 dark:hover:bg-gray-800/30 transition-colors">
                     Schedule
                   </Button>
-                </div>
-              </div>
+        </div>
+      </div>
             </CardContent>
           </Card>
         </TabsContent>
