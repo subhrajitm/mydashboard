@@ -270,12 +270,27 @@ interface TableWrapperProps<T> {
 
 const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrapperProps<T>) => {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(5)
+  const [globalFilter, setGlobalFilter] = useState("")
+
+  // Memoize the filtered data
+  const filteredData = useMemo(() => {
+    if (!globalFilter) return data
+
+    return data.filter(row => {
+      return Object.values(row).some(value => {
+        if (value === null || value === undefined) return false
+        return String(value).toLowerCase().includes(globalFilter.toLowerCase())
+      })
+    })
+  }, [data, globalFilter])
 
   // Memoize the sorted data
   const sortedData = useMemo(() => {
-    if (!sortConfig) return data
+    if (!sortConfig) return filteredData
 
-    return [...data].sort((a, b) => {
+    return [...filteredData].sort((a, b) => {
       const aValue = a[sortConfig.key as keyof T]
       const bValue = b[sortConfig.key as keyof T]
 
@@ -293,7 +308,25 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
         ? (aValue as number) - (bValue as number)
         : (bValue as number) - (aValue as number)
     })
-  }, [data, sortConfig])
+  }, [filteredData, sortConfig])
+
+  // Calculate pagination
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage)
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
+  // Handle filter change
+  const handleFilterChange = (value: string) => {
+    setGlobalFilter(value)
+    setCurrentPage(1) // Reset to first page when filter changes
+  }
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
 
   // Memoize the sort handler
   const handleSort = useCallback((key: string) => {
@@ -319,7 +352,7 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
         {column.sortable && (
           <ChevronsUpDown className="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity" />
         )}
-          </div>
+      </div>
     </th>
   ), [handleSort])
 
@@ -338,22 +371,79 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
   ), [columns, renderCell])
 
   return (
-    <div className="overflow-x-auto rounded-lg backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 border border-white/20 dark:border-gray-700/20 shadow-lg">
-      <table className="w-full text-sm text-left">
-        <thead className="text-xs uppercase">
-          <tr className="border-b border-white/10 dark:border-gray-700/20">
-            {columns.map((column) => (
-              <TableHeader key={column.key} column={column} />
+    <div className="space-y-4">
+      {/* Global Filter */}
+      <div className="flex items-center gap-4 px-6 py-4 rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm bg-white/5 dark:bg-gray-800/5">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search in all columns..."
+            className="pl-10"
+            value={globalFilter}
+            onChange={(e) => handleFilterChange(e.target.value)}
+          />
+        </div>
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          {filteredData.length} results
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm">
+        <table className="w-full text-sm text-left">
+          <thead className="text-xs uppercase bg-white/5 dark:bg-gray-800/5">
+            <tr className="border-b border-white/10 dark:border-gray-700/20">
+              {columns.map((column) => (
+                <TableHeader key={column.key} column={column} />
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/10 dark:divide-gray-700/20">
+            {paginatedData.map((row, index) => (
+              <TableRow key={index} row={row} index={index} />
             ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-white/10 dark:divide-gray-700/20">
-          {sortedData.map((row, index) => (
-            <TableRow key={index} row={row} index={index} />
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between px-6 py-4 rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm bg-white/5 dark:bg-gray-800/5">
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, sortedData.length)} of {sortedData.length} entries
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="border-white/10 dark:border-gray-700/20 hover:bg-white/5 dark:hover:bg-gray-800/5"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <Button
+              key={page}
+              variant={currentPage === page ? "default" : "outline"}
+              size="sm"
+              onClick={() => handlePageChange(page)}
+              className={currentPage === page ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-white/10 dark:border-gray-700/20 hover:bg-white/5 dark:hover:bg-gray-800/5"}
+            >
+              {page}
+            </Button>
           ))}
-        </tbody>
-      </table>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="border-white/10 dark:border-gray-700/20 hover:bg-white/5 dark:hover:bg-gray-800/5"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -626,9 +716,9 @@ export default function FinalInvoiceStatus() {
                           <span className={part.criteria3 === "<=3" ? "text-green-500" : ""}>
                             {part.criteria3}
                           </span>
-          </div>
+                        </div>
                       ))}
-        </div>
+                    </div>
                   )
                 case 'applicableDisc':
                   return <Badge variant="outline">{row.applicableDisc}</Badge>
@@ -638,7 +728,7 @@ export default function FinalInvoiceStatus() {
                   return (
                     <Button
                       variant="outline"
-              size="sm"
+                      size="sm"
                       onClick={() => setActiveTab('recommendations')}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
