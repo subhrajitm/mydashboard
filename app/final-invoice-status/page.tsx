@@ -1,6 +1,6 @@
 "use client"
 
-import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown } from "lucide-react"
+import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -14,6 +14,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
 
 const invoiceData = [
   { shop: "Shop1", engines: 12, due: 10, issued: 1, upcoming: 1 },
@@ -78,16 +81,76 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export default function FinalInvoiceStatusPage() {
+  const [activeStatus, setActiveStatus] = useState("All")
+  const [searchQuery, setSearchQuery] = useState("")
+
   return (
     <div className="space-y-8 p-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-            Final Invoice Status
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Track and manage final invoices across all shops
-          </p>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                Final Invoice Status
+              </h1>
+              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                Updated 5m ago
+              </Badge>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Track and manage final invoices across all shops
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Plus className="h-4 w-4 mr-2" />
+              New Invoice
+            </Button>
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search invoices..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              {["All", "Due", "Issued", "Upcoming"].map((status) => (
+                <Button
+                  key={status}
+                  variant={activeStatus === status ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveStatus(status)}
+                  className={activeStatus === status ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                >
+                  {status}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Calendar className="h-4 w-4 mr-2" />
+              Date Range
+            </Button>
+            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <SortAsc className="h-4 w-4 mr-2" />
+              Sort
+            </Button>
+          </div>
         </div>
       </div>
 

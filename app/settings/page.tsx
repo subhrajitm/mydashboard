@@ -1,10 +1,12 @@
 "use client"
 
-import { Settings, Bell, User, Lock, CreditCard, HelpCircle } from "lucide-react"
+import { Settings, Bell, User, Lock, CreditCard, HelpCircle, Save, Search, History, Database, RotateCcw } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
 
 const settingsSections = [
   {
@@ -94,21 +96,77 @@ const settingsSections = [
 ]
 
 export default function SettingsPage() {
+  const [activeCategory, setActiveCategory] = useState("General")
+  const [searchQuery, setSearchQuery] = useState("")
+
   return (
     <div className="space-y-8 p-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-            Settings
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Manage your account settings and preferences
-          </p>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                Settings
+              </h1>
+              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                Admin
+              </Badge>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Manage your account settings and preferences
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <HelpCircle className="h-4 w-4 mr-2" />
+              Help Center
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Save className="h-4 w-4 mr-2" />
+              Save Changes
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <History className="h-4 w-4 mr-2" />
+              View History
+            </Button>
+          </div>
         </div>
-        <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-          <HelpCircle className="h-4 w-4 mr-2" />
-          Help Center
-        </Button>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search settings..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              {["General", "Account", "Notifications", "Security", "Billing", "API"].map((category) => (
+                <Button
+                  key={category}
+                  variant={activeCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveCategory(category)}
+                  className={activeCategory === category ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Database className="h-4 w-4 mr-2" />
+              Backup
+            </Button>
+            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Restore
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

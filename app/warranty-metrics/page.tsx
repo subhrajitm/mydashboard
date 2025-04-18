@@ -18,6 +18,7 @@ import {
   TrendingUp,
   TrendingDown,
   AlertCircle,
+  RefreshCw,
 } from "lucide-react"
 import {
   BarChart,
@@ -38,6 +39,9 @@ import {
 } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
+import { Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 interface WarrantyData {
   shop: string;
@@ -126,6 +130,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function WarrantyMetrics() {
   const [activeTimeframe, setActiveTimeframe] = useState("1w")
   const [searchQuery, setSearchQuery] = useState("")
+  const [activeView, setActiveView] = useState("overview")
 
   const prepareShopChartData = () => {
     return warrantyData.map(shop => ({
@@ -146,14 +151,74 @@ export default function WarrantyMetrics() {
 
   return (
     <div className="space-y-8 p-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-            Warranty Metrics
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Track and manage warranty claims across all shops
-          </p>
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                Warranty Metrics
+              </h1>
+              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+                Live
+              </Badge>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              Track and manage warranty claims across all shops
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search shops..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              {["overview", "detailed", "analytics"].map((view) => (
+                <Button
+                  key={view}
+                  variant={activeView === view ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveView(view)}
+                  className={activeView === view ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                >
+                  {view.charAt(0).toUpperCase() + view.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {["1d", "1w", "1m", "3m", "1y"].map((timeframe) => (
+              <Button
+                key={timeframe}
+                variant={activeTimeframe === timeframe ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveTimeframe(timeframe)}
+                className={activeTimeframe === timeframe ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+              >
+                {timeframe}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -280,38 +345,6 @@ export default function WarrantyMetrics() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Search and Timeframe */}
-      <div className="flex flex-col md:flex-row justify-between gap-4">
-        <div className="flex gap-4">
-          <SearchInput
-            placeholder="Search shops..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full md:w-96"
-          />
-          <div className="flex items-center gap-2">
-            <CustomButton variant="ghost" size="sm" icon={<Download className="h-4 w-4" />}>
-              Export
-            </CustomButton>
-            <CustomButton variant="ghost" size="sm" icon={<Filter className="h-4 w-4" />}>
-              Filter
-            </CustomButton>
-          </div>
-        </div>
-        <div className="flex space-x-2">
-          {["1d", "1w", "1m", "3m", "1y"].map((timeframe) => (
-            <CustomButton
-              key={timeframe}
-              variant={activeTimeframe === timeframe ? "default" : "outline"}
-              size="sm"
-              onClick={() => setActiveTimeframe(timeframe)}
-            >
-              {timeframe}
-            </CustomButton>
-          ))}
-        </div>
-      </div>
     </div>
   )
 } 
