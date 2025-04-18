@@ -2,6 +2,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import Sidebar from "@/components/sidebar"
+import { Inter } from "next/font/google"
+import { Chatbot } from "@/components/chatbot"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: 'Financial Dashboard',
@@ -15,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -29,6 +33,7 @@ export default function RootLayout({
             </main>
           </div>
         </ThemeProvider>
+        <Chatbot />
       </body>
     </html>
   )
