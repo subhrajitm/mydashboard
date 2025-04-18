@@ -25,6 +25,8 @@ import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useTheme } from "next-themes"
 import Image from "next/image"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const navItems = [
   { 
@@ -108,7 +110,7 @@ export default function Sidebar() {
       <div className="flex items-center justify-between p-4 border-b border-white/10 dark:border-gray-700/10">
         <div className="flex items-center space-x-3">
           {isExpanded ? (
-            <div className="relative h-[50px] w-32">
+            <Link href="/" className="relative h-[50px] w-32">
               <Image
                 src="/genpact-logo.svg"
                 alt="Genpact Logo"
@@ -116,9 +118,9 @@ export default function Sidebar() {
                 className="object-contain dark:filter-none filter invert"
                 priority
               />
-            </div>
+            </Link>
           ) : (
-            <div className="relative h-[50px] w-[50px]">
+            <Link href="/" className="relative h-[50px] w-[50px]">
               <Image
                 src="/genpact-logo-m.svg"
                 alt="Genpact Logo"
@@ -126,7 +128,7 @@ export default function Sidebar() {
                 className="object-contain dark:filter-none filter invert"
                 priority
               />
-            </div>
+            </Link>
           )}
         </div>
         <Button
