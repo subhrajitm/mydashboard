@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo, useCallback } from "react"
 import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc, X, ChevronRight, ChevronLeft, ArrowUpDown, Eye, Check, ChevronsUpDown, DollarSign } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -271,6 +271,7 @@ interface TableWrapperProps<T> {
 const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrapperProps<T>) => {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
 
+  // Memoize the sorted data
   const sortedData = useMemo(() => {
     if (!sortConfig) return data
 
@@ -294,7 +295,8 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
     })
   }, [data, sortConfig])
 
-  const handleSort = (key: string) => {
+  // Memoize the sort handler
+  const handleSort = useCallback((key: string) => {
     setSortConfig((current) => {
       if (!current || current.key !== key) {
         return { key, direction: 'asc' }
@@ -304,7 +306,36 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
       }
       return null
     })
-  }
+  }, [])
+
+  // Memoize the table header
+  const TableHeader = useCallback(({ column }: { column: TableColumn }) => (
+    <th
+      className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer"
+      onClick={() => column.sortable && handleSort(column.key)}
+    >
+      <div className="flex items-center gap-2">
+        {column.label}
+        {column.sortable && (
+          <ChevronsUpDown className="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity" />
+        )}
+          </div>
+    </th>
+  ), [handleSort])
+
+  // Memoize the table row
+  const TableRow = useCallback(({ row, index }: { row: T; index: number }) => (
+    <tr
+      key={index}
+      className="hover:bg-white/5 dark:hover:bg-gray-800/5 transition-colors"
+    >
+      {columns.map((column) => (
+        <td key={column.key} className="px-6 py-4 text-gray-700 dark:text-gray-300">
+          {renderCell(row, column.key)}
+        </td>
+      ))}
+    </tr>
+  ), [columns, renderCell])
 
   return (
     <div className="overflow-x-auto rounded-lg backdrop-blur-lg bg-white/10 dark:bg-gray-800/10 border border-white/20 dark:border-gray-700/20 shadow-lg">
@@ -312,43 +343,25 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
         <thead className="text-xs uppercase">
           <tr className="border-b border-white/10 dark:border-gray-700/20">
             {columns.map((column) => (
-              <th
-                key={column.key}
-                className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer"
-                onClick={() => column.sortable && handleSort(column.key)}
-              >
-                <div className="flex items-center gap-2">
-                  {column.label}
-                  {column.sortable && (
-                    <ChevronsUpDown className="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity" />
-                  )}
-                </div>
-              </th>
+              <TableHeader key={column.key} column={column} />
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-white/10 dark:divide-gray-700/20">
           {sortedData.map((row, index) => (
-            <tr
-              key={index}
-              className="hover:bg-white/5 dark:hover:bg-gray-800/5 transition-colors"
-            >
-              {columns.map((column) => (
-                <td key={column.key} className="px-6 py-4 text-gray-700 dark:text-gray-300">
-                  {renderCell(row, column.key)}
-                </td>
-              ))}
-            </tr>
+            <TableRow key={index} row={row} index={index} />
           ))}
         </tbody>
       </table>
-    </div>
+          </div>
   )
 }
 
 export default function FinalInvoiceStatus() {
-  const [activeTable, setActiveTable] = useState<'invoice' | 'warranty' | 'opportunity' | 'recommendations' | 'priority'>('invoice')
-  const [selectedShop, setSelectedShop] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("invoice")
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedShop, setSelectedShop] = useState("all")
 
   // Summary statistics
   const summaryStats = [
@@ -404,8 +417,9 @@ export default function FinalInvoiceStatus() {
     { id: 'priority', label: 'Priority', description: 'Set priority levels' }
   ]
 
-  const renderActiveTable = () => {
-    switch (activeTable) {
+  // Memoize the table rendering function
+  const renderActiveTable = useCallback(() => {
+    switch (activeTab) {
       case 'invoice':
         return (
           <TableWrapper
@@ -437,7 +451,7 @@ export default function FinalInvoiceStatus() {
                       size="sm"
                       onClick={() => {
                         setSelectedShop(row.shop)
-                        setActiveTable('warranty')
+                        setActiveTab('warranty')
                       }}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
@@ -477,7 +491,7 @@ export default function FinalInvoiceStatus() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setActiveTable('opportunity')}
+                      onClick={() => setActiveTab('opportunity')}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
                       Proceed
@@ -522,7 +536,7 @@ export default function FinalInvoiceStatus() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setActiveTable('recommendations')}
+                      onClick={() => setActiveTab('recommendations')}
                       className="bg-[#FF4F59] text-white hover:bg-[#FF4F59]/90"
                     >
                       Analyze for Warranty Oppty
@@ -564,7 +578,7 @@ export default function FinalInvoiceStatus() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setActiveTable('priority')}
+                      onClick={() => setActiveTab('priority')}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
                       Proceed
@@ -612,9 +626,9 @@ export default function FinalInvoiceStatus() {
                           <span className={part.criteria3 === "<=3" ? "text-green-500" : ""}>
                             {part.criteria3}
                           </span>
-                        </div>
+          </div>
                       ))}
-                    </div>
+        </div>
                   )
                 case 'applicableDisc':
                   return <Badge variant="outline">{row.applicableDisc}</Badge>
@@ -624,8 +638,8 @@ export default function FinalInvoiceStatus() {
                   return (
                     <Button
                       variant="outline"
-                      size="sm"
-                      onClick={() => setActiveTable('recommendations')}
+              size="sm"
+                      onClick={() => setActiveTab('recommendations')}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
                       Proceed
@@ -638,21 +652,18 @@ export default function FinalInvoiceStatus() {
           />
         )
     }
-  }
+  }, [activeTab])
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Header */}
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-              Final Invoice Status
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              Track and manage your invoice status and warranty claims
-            </p>
-          </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+            Final Invoice Status
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Track and manage your invoice status and warranty claims
+          </p>
         </div>
       </div>
 
@@ -680,15 +691,13 @@ export default function FinalInvoiceStatus() {
         ))}
       </div>
 
-     
-
       {/* Steps Navigation */}
       <div className="relative">
         <div className="flex items-center justify-between">
           {steps.map((step, index) => {
-            const isActive = step.id === activeTable
-            const isCompleted = steps.findIndex(s => s.id === activeTable) > index
-            const isUpcoming = steps.findIndex(s => s.id === activeTable) < index
+            const isActive = step.id === activeTab
+            const isCompleted = steps.findIndex(s => s.id === activeTab) > index
+            const isUpcoming = steps.findIndex(s => s.id === activeTab) < index
 
             return (
               <div key={step.id} className="relative flex-1">
@@ -724,7 +733,7 @@ export default function FinalInvoiceStatus() {
                   </div>
                   <div className="mt-2 text-center">
                     <button
-                      onClick={() => setActiveTable(step.id as any)}
+                      onClick={() => setActiveTab(step.id)}
                       className={`
                         transition-colors duration-300
                         ${isActive 
@@ -750,6 +759,11 @@ export default function FinalInvoiceStatus() {
       <div className="mt-8">
         {renderActiveTable()}
       </div>
+
+      {/* Footer */}
+      <footer className="py-6 text-center text-xs text-muted-foreground/60">
+        <p>Copyright © 2025 Genpact India. All rights reserved.</p>
+      </footer>
     </div>
   )
 } 

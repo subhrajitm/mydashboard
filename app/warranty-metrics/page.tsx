@@ -196,19 +196,19 @@ export default function WarrantyMetrics() {
   }
 
   return (
-    <div className="space-y-8 p-6 min-h-screen">
+    <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
             Warranty Metrics
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Track and analyze warranty claims across all shops
+          <p className="text-sm text-muted-foreground">
+            Track and analyze warranty claims and performance metrics
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Select value={activeTimeframe} onValueChange={setActiveTimeframe}>
-            <SelectTrigger className="w-[180px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
+            <SelectTrigger className="w-[140px] bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
               <SelectValue placeholder="Select timeframe" />
             </SelectTrigger>
             <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-white/20">
@@ -219,28 +219,28 @@ export default function WarrantyMetrics() {
             </SelectContent>
           </Select>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
             <Input
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20"
+              className="pl-7 h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20"
             />
             {searchQuery && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-5 w-5"
                 onClick={() => setSearchQuery("")}
               >
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3" />
               </Button>
             )}
           </div>
         </div>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-8">
+      <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
           <TabsTrigger value="overview" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Overview</TabsTrigger>
           <TabsTrigger value="analytics" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Analytics</TabsTrigger>
@@ -248,59 +248,59 @@ export default function WarrantyMetrics() {
           <TabsTrigger value="settings" className="data-[state=active]:bg-white/30 dark:data-[state=active]:bg-gray-800/30">Settings</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-8">
+        <TabsContent value="overview" className="space-y-4">
           {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {warrantyStats.map((stat) => (
               <Card key={stat.title} className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5 hover:shadow-xl transition-all duration-300 hover:bg-white/30 dark:hover:bg-gray-900/30">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
                   <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                  <stat.icon className="h-4 w-4 text-muted-foreground" />
+                  <stat.icon className="h-3 w-3 text-muted-foreground" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stat.value}</div>
+                <CardContent className="pt-1">
+                  <div className="text-xl font-bold">{stat.value}</div>
                   <p className="text-xs text-muted-foreground">{stat.description}</p>
-                  <Progress value={75} className="mt-2 bg-white/20" />
+                  <Progress value={75} className="mt-1 bg-white/20" />
                 </CardContent>
               </Card>
             ))}
           </div>
 
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Warranty Claims Chart */}
             <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5">
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
-                  <CardTitle>Warranty Claims</CardTitle>
-                  <CardDescription>Claims by product category</CardDescription>
+                  <CardTitle className="text-lg">Warranty Claims</CardTitle>
+                  <CardDescription className="text-xs">Claims by product category</CardDescription>
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-2 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
-                      {chartType === 'bar' ? <BarChart3 className="h-4 w-4" /> : <LineChart className="h-4 w-4" />}
-                      <ChevronDown className="h-4 w-4" />
+                    <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
+                      {chartType === 'bar' ? <BarChart3 className="h-3 w-3" /> : <LineChart className="h-3 w-3" />}
+                      <ChevronDown className="h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-white/20">
                     <DropdownMenuItem onClick={() => setChartType('bar')}>
-                      <BarChart3 className="h-4 w-4 mr-2" />
+                      <BarChart3 className="h-3 w-3 mr-2" />
                       Bar Chart
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setChartType('line')}>
-                      <LineChart className="h-4 w-4 mr-2" />
+                      <LineChart className="h-3 w-3 mr-2" />
                       Line Chart
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
+              <CardContent className="pt-0">
+                <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
                     {chartType === 'bar' ? (
                       <BarChart data={warrantyData}>
-                        <XAxis dataKey="shop" />
-                        <YAxis />
+                        <XAxis dataKey="shop" fontSize={10} />
+                        <YAxis fontSize={10} />
                         <RechartsTooltip content={<CustomTooltip />} />
                         <Bar dataKey="approved" fill="#4CAF50" radius={[4, 4, 0, 0]} />
                         <Bar dataKey="pending" fill="#FFC107" radius={[4, 4, 0, 0]} />
@@ -308,8 +308,8 @@ export default function WarrantyMetrics() {
                       </BarChart>
                     ) : (
                       <RechartsLineChart data={warrantyData}>
-                        <XAxis dataKey="shop" />
-                        <YAxis />
+                        <XAxis dataKey="shop" fontSize={10} />
+                        <YAxis fontSize={10} />
                         <RechartsTooltip content={<CustomTooltip />} />
                         <Line type="monotone" dataKey="approved" stroke="#4CAF50" strokeWidth={2} />
                         <Line type="monotone" dataKey="pending" stroke="#FFC107" strokeWidth={2} />
@@ -323,16 +323,16 @@ export default function WarrantyMetrics() {
 
             {/* Resolution Time Chart */}
             <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5">
-              <CardHeader>
-                <CardTitle>Resolution Time</CardTitle>
-                <CardDescription>Average time to resolve claims</CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Resolution Time</CardTitle>
+                <CardDescription className="text-xs">Average time to resolve claims</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
+              <CardContent className="pt-0">
+                <div className="h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={resolutionData}>
-                      <XAxis dataKey="month" />
-                      <YAxis />
+                      <XAxis dataKey="month" fontSize={10} />
+                      <YAxis fontSize={10} />
                       <RechartsTooltip content={<CustomTooltip />} />
                       <Area type="monotone" dataKey="days" stroke="#FFAD28" fill="#FFAD28/20" />
                     </AreaChart>
@@ -344,27 +344,27 @@ export default function WarrantyMetrics() {
 
           {/* Recent Claims */}
           <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-white/20 shadow-lg shadow-black/5">
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
-                <CardTitle>Recent Claims</CardTitle>
-                <CardDescription>Latest warranty claims and their status</CardDescription>
+                <CardTitle className="text-lg">Recent Claims</CardTitle>
+                <CardDescription className="text-xs">Latest warranty claims and their status</CardDescription>
               </div>
-              <Button variant="outline" size="sm" className="gap-2 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
-                <Download className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="gap-1 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border-white/20">
+                <Download className="h-3 w-3" />
                 Export
               </Button>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-0">
+              <div className="space-y-2">
                 {recentClaims.map((claim) => (
-                  <div key={claim.id} className="flex items-center justify-between p-4 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200">
-                    <div className="flex items-center space-x-4">
-                      <div className="p-2 rounded-full bg-[#FF4F59]/10">
-                        <FileText className="h-4 w-4 text-[#FF4F59]" />
+                  <div key={claim.id} className="flex items-center justify-between p-3 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-1.5 rounded-full bg-[#FF4F59]/10">
+                        <FileText className="h-3 w-3 text-[#FF4F59]" />
                       </div>
                       <div>
-                        <p className="font-medium">{claim.product}</p>
-                        <p className="text-sm text-muted-foreground">{claim.date}</p>
+                        <p className="text-sm font-medium">{claim.product}</p>
+                        <p className="text-xs text-muted-foreground">{claim.date}</p>
                       </div>
                     </div>
                     <Badge className={getStatusColor(claim.status)}>
@@ -389,6 +389,11 @@ export default function WarrantyMetrics() {
           {/* Settings content will be added here */}
         </TabsContent>
       </Tabs>
+
+      {/* Footer */}
+      <footer className="py-6 text-center text-xs text-muted-foreground/60">
+        <p>Copyright © 2025 Genpact India. All rights reserved.</p>
+      </footer>
     </div>
   )
 } 

@@ -130,85 +130,74 @@ export default function SettingsPage() {
   const [twoFactorAuth, setTwoFactorAuth] = useState(false)
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-                Settings
-              </h1>
-              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                Admin
-              </Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Manage your account settings and preferences
-            </p>
-          </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <HelpCircle className="h-4 w-4 mr-1" />
-              Help
-            </Button>
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Save className="h-4 w-4 mr-1" />
-              Save
-            </Button>
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <History className="h-4 w-4 mr-1" />
-              History
-            </Button>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+              Settings
+            </h1>
+            <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
+              Admin
+            </Badge>
           </div>
+          <p className="text-sm text-muted-foreground">
+            Manage your account settings and preferences
+          </p>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
-              </div>
-              <Input
-                placeholder="Search settings..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 h-9 pl-8 pr-8 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
-              />
-              {searchQuery && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 p-0 hover:bg-[#FF4F59]/10"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    <X className="h-3 w-3 text-muted-foreground" />
-                  </Button>
-                </div>
-              )}
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+            <HelpCircle className="h-4 w-4 mr-1" />
+            Help
+          </Button>
+          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+            <Save className="h-4 w-4 mr-1" />
+            Save
+          </Button>
+          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+            <History className="h-4 w-4 mr-1" />
+            History
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
             </div>
-            <div className="flex items-center gap-1">
-              {["General", "Account", "Notifications", "Security", "Billing", "API"].map((category) => (
+            <Input
+              placeholder="Search settings..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-64 h-9 pl-8 pr-8 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
+            />
+            {searchQuery && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2">
                 <Button
-                  key={category}
-                  variant={activeCategory === category ? "default" : "outline"}
+                  variant="ghost"
                   size="sm"
-                  onClick={() => setActiveCategory(category)}
-                  className={activeCategory === category ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                  className="h-7 w-7 p-0 hover:bg-[#FF4F59]/10"
+                  onClick={() => setSearchQuery("")}
                 >
-                  {category}
+                  <X className="h-3 w-3 text-muted-foreground" />
                 </Button>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-1">
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Database className="h-4 w-4 mr-1" />
-              Backup
-            </Button>
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <RotateCcw className="h-4 w-4 mr-1" />
-              Restore
-            </Button>
+            {["General", "Account", "Notifications", "Security", "Billing", "API"].map((category) => (
+              <Button
+                key={category}
+                variant={activeCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCategory(category)}
+                className={activeCategory === category ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+              >
+                {category}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
@@ -455,6 +444,11 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      
+      {/* Footer */}
+      <footer className="py-6 text-center text-xs text-muted-foreground/60">
+        <p>Copyright © 2025 Genpact India. All rights reserved.</p>
+      </footer>
     </div>
   )
 } 

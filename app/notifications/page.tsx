@@ -76,78 +76,72 @@ export default function NotificationsPage() {
   })
 
   return (
-    <div className="space-y-8 p-6">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-                Notifications
-              </h1>
-              <Badge variant="secondary" className="bg-[#FF4F59]/10 text-[#FF4F59]">
-                {notifications.filter(n => !n.read).length} Unread
-              </Badge>
-            </div>
-            <p className="text-lg text-muted-foreground">
-              Manage your notifications and stay updated with important alerts
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-              Mark All as Read
-            </Button>
-            <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <X className="h-4 w-4 mr-2" />
-              Clear All
-            </Button>
-          </div>
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+            Notifications
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Manage your notifications and stay updated with important alerts
+          </p>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
-              </div>
-              <Input
-                placeholder="Search notifications..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-72 pl-10 pr-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
-              />
-              {searchQuery && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 hover:bg-[#FF4F59]/10"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    <X className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </div>
-              )}
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+            <CheckCircle2 className="h-4 w-4 mr-2" />
+            Mark All as Read
+          </Button>
+          <Button variant="outline" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+            <X className="h-4 w-4 mr-2" />
+            Clear All
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <Search className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-[#FF4F59]" />
             </div>
-            <div className="flex items-center gap-2">
-              {["All", "Unread", "Read"].map((category) => (
+            <Input
+              placeholder="Search notifications..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-72 pl-10 pr-10 bg-white/50 border-[#FF4F59]/20 focus:border-[#FF4F59]/40 focus:ring-1 focus:ring-[#FF4F59]/20 transition-all duration-200"
+            />
+            {searchQuery && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                 <Button
-                  key={category}
-                  variant={filter === category.toLowerCase() ? "default" : "outline"}
+                  variant="ghost"
                   size="sm"
-                  onClick={() => setFilter(category.toLowerCase())}
-                  className={filter === category.toLowerCase() ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+                  className="h-8 w-8 p-0 hover:bg-[#FF4F59]/10"
+                  onClick={() => setSearchQuery("")}
                 >
-                  {category}
+                  <X className="h-4 w-4 text-muted-foreground" />
                 </Button>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
-              <Bell className="h-4 w-4 mr-2" />
-              Notification Settings
-            </Button>
+            {["All", "Unread", "Read"].map((category) => (
+              <Button
+                key={category}
+                variant={filter === category.toLowerCase() ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter(category.toLowerCase())}
+                className={filter === category.toLowerCase() ? "bg-[#FF4F59] hover:bg-[#FF4F59]/90" : "border-[#FF4F59]/20 hover:border-[#FF4F59]/40"}
+              >
+                {category}
+              </Button>
+            ))}
           </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="border-[#FF4F59]/20 hover:border-[#FF4F59]/40">
+            <Bell className="h-4 w-4 mr-2" />
+            Notification Settings
+          </Button>
         </div>
       </div>
 
@@ -192,6 +186,11 @@ export default function NotificationsPage() {
           </Card>
         ))}
       </div>
+      
+      {/* Footer */}
+      <footer className="py-6 text-center text-xs text-muted-foreground/60">
+        <p>Copyright © 2025 Genpact India. All rights reserved.</p>
+      </footer>
     </div>
   )
 } 

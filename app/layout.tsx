@@ -24,8 +24,8 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="flex h-screen">
             <Sidebar />
-            <main className="flex-1 overflow-y-auto">
-              <div className="h-full bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl p-6">
+            <main className="flex-1 overflow-y-auto bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl">
+              <div className="h-full p-6">
                 {children}
               </div>
             </main>
