@@ -158,9 +158,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <Card key={stat.title} className="group hover:scale-[1.02] transition-all duration-300 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+          <Card key={stat.title} className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground/80">
                 {stat.title}
@@ -190,7 +190,7 @@ export default function DashboardPage() {
 
       {/* Charts Section */}
       <div className="grid gap-8 md:grid-cols-2">
-        <Card className="group hover:scale-[1.02] transition-all duration-300 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+        <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Revenue Overview</span>
@@ -231,7 +231,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="group hover:scale-[1.02] transition-all duration-300 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+        <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Expense Breakdown</span>
@@ -272,7 +272,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Transactions */}
-      <Card className="group hover:scale-[1.02] transition-all duration-300 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+      <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Recent Transactions</span>
