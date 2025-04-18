@@ -97,9 +97,37 @@ const settingsSections = [
   },
 ]
 
+// Custom Switch Component
+const CustomSwitch = ({ checked, onCheckedChange }: { checked: boolean; onCheckedChange: (checked: boolean) => void }) => {
+  return (
+    <button
+      onClick={() => onCheckedChange(!checked)}
+      className={`
+        relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200
+        ${checked ? 'bg-[#FF4F59]/20' : 'bg-white/20 dark:bg-gray-800/20'}
+        focus:outline-none focus:ring-2 focus:ring-[#FF4F59]/20
+      `}
+    >
+      <span
+        className={`
+          inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-200
+          ${checked ? 'translate-x-4' : 'translate-x-0.5'}
+          ${checked ? 'bg-[#FF4F59]' : 'bg-white/80 dark:bg-gray-700/80'}
+        `}
+      />
+    </button>
+  )
+}
+
 export default function SettingsPage() {
   const [activeCategory, setActiveCategory] = useState("General")
   const [searchQuery, setSearchQuery] = useState("")
+  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [pushNotifications, setPushNotifications] = useState(true)
+  const [smsAlerts, setSmsAlerts] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
+  const [autoSave, setAutoSave] = useState(true)
+  const [twoFactorAuth, setTwoFactorAuth] = useState(false)
 
   return (
     <div className="space-y-4 p-4">
@@ -336,21 +364,21 @@ export default function SettingsPage() {
                       <h3 className="text-sm font-medium">Email Notifications</h3>
                       <p className="text-xs text-muted-foreground">Receive updates via email</p>
                     </div>
-                    <Switch className="h-4 w-7" defaultChecked />
+                    <CustomSwitch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
                   </div>
                   <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
                     <div>
                       <h3 className="text-sm font-medium">Push Notifications</h3>
                       <p className="text-xs text-muted-foreground">Get instant alerts on your devices</p>
                     </div>
-                    <Switch className="h-4 w-7" defaultChecked />
+                    <CustomSwitch checked={pushNotifications} onCheckedChange={setPushNotifications} />
                   </div>
                   <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
                     <div>
                       <h3 className="text-sm font-medium">SMS Alerts</h3>
                       <p className="text-xs text-muted-foreground">Receive important updates via SMS</p>
                     </div>
-                    <Switch className="h-4 w-7" />
+                    <CustomSwitch checked={smsAlerts} onCheckedChange={setSmsAlerts} />
                   </div>
                 </div>
               </CardContent>
@@ -378,14 +406,14 @@ export default function SettingsPage() {
                       <h3 className="text-sm font-medium">Dark Mode</h3>
                       <p className="text-xs text-muted-foreground">Enable dark mode for better visibility</p>
                     </div>
-                    <Switch className="h-4 w-7" />
+                    <CustomSwitch checked={darkMode} onCheckedChange={setDarkMode} />
                   </div>
                   <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
                     <div>
                       <h3 className="text-sm font-medium">Auto-save Changes</h3>
                       <p className="text-xs text-muted-foreground">Automatically save your changes</p>
                     </div>
-                    <Switch className="h-4 w-7" defaultChecked />
+                    <CustomSwitch checked={autoSave} onCheckedChange={setAutoSave} />
                   </div>
                 </div>
               </CardContent>
@@ -410,7 +438,7 @@ export default function SettingsPage() {
                       <h3 className="text-sm font-medium">Two-Factor Authentication</h3>
                       <p className="text-xs text-muted-foreground">Add an extra layer of security</p>
                     </div>
-                    <Switch className="h-4 w-7" />
+                    <CustomSwitch checked={twoFactorAuth} onCheckedChange={setTwoFactorAuth} />
                   </div>
                   <div className="flex items-center justify-between p-2 rounded-lg bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm border border-white/20">
                     <div>
