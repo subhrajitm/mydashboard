@@ -141,57 +141,57 @@ export function Chatbot() {
     }`}>
       {!isMinimized ? (
         <>
-          <div className="flex items-center justify-between p-3 border-b border-gray-800">
+          <div className="flex items-center justify-between p-2 border-b border-gray-800">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]">
-                <MessageSquare className="h-5 w-5 text-white" />
+                <MessageSquare className="h-4 w-4 text-white" />
               </div>
               <span className="font-medium text-white">Chat Assistant</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                className="h-7 w-7 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
                 onClick={() => setIsMaximized(!isMaximized)}
               >
                 {isMaximized ? (
-                  <Minimize className="h-4 w-4" />
+                  <Minimize className="h-3.5 w-3.5" />
                 ) : (
-                  <Maximize className="h-4 w-4" />
+                  <Maximize className="h-3.5 w-3.5" />
                 )}
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                className="h-7 w-7 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
                 onClick={() => setIsMinimized(!isMinimized)}
               >
                 {isMinimized ? (
-                  <Maximize2 className="h-4 w-4" />
+                  <Maximize2 className="h-3.5 w-3.5" />
                 ) : (
-                  <Minimize2 className="h-4 w-4" />
+                  <Minimize2 className="h-3.5 w-3.5" />
                 )}
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                className="h-7 w-7 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
                 onClick={() => setIsOpen(false)}
               >
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
-          <div className="flex flex-col h-[calc(100%-3.5rem)]">
-            <div className="flex-1 p-4 overflow-y-auto">
+          <div className="flex flex-col h-[calc(100%-2.5rem)]">
+            <div className="flex-1 p-2 overflow-y-auto">
               {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-4">
-                  <div className="p-3 rounded-full bg-gray-800">
-                    <Bot className="h-8 w-8" />
+                <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-3">
+                  <div className="p-2 rounded-full bg-gray-800">
+                    <Bot className="h-6 w-6" />
                   </div>
                   <p className="text-center">How can I help you today?</p>
-                  <div className="grid grid-cols-1 gap-2 w-full">
+                  <div className="grid grid-cols-1 gap-1.5 w-full">
                     {QUICK_ACTIONS.map((action) => (
                       <Button
                         key={action.label}
@@ -205,7 +205,7 @@ export function Chatbot() {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {messages.map((message) => (
                     <div
                       key={message.id}
@@ -214,38 +214,38 @@ export function Chatbot() {
                       }`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg p-3 flex items-start gap-2 transition-transform hover:scale-[1.02] ${
+                        className={`max-w-[80%] rounded-lg p-2 flex items-start gap-2 transition-transform hover:scale-[1.02] ${
                           message.sender === "user"
                             ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white"
                             : "bg-gray-800 text-white"
                         }`}
                       >
                         {message.sender === "bot" && (
-                          <Bot className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                          <Bot className="h-4 w-4 mt-0.5 flex-shrink-0" />
                         )}
                         {message.sender === "user" && (
-                          <User className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                          <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
                         )}
                         <div>
-                          <p>{message.text}</p>
-                          <p className="text-xs opacity-70 mt-1">
+                          <p className="text-sm">{message.text}</p>
+                          <p className="text-[10px] opacity-70 mt-0.5">
                             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
                         {message.status === "sending" && (
-                          <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                          <Loader2 className="h-3 w-3 animate-spin ml-1" />
                         )}
                       </div>
                     </div>
                   ))}
                   {isTyping && (
                     <div className="flex justify-start">
-                      <div className="max-w-[80%] rounded-lg p-3 bg-gray-800 text-white flex items-center gap-2">
-                        <Bot className="h-5 w-5" />
+                      <div className="max-w-[80%] rounded-lg p-2 bg-gray-800 text-white flex items-center gap-2">
+                        <Bot className="h-4 w-4" />
                         <div className="flex gap-1">
-                          <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" />
-                          <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]" />
-                          <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]" />
                         </div>
                       </div>
                     </div>
@@ -255,14 +255,14 @@ export function Chatbot() {
               )}
             </div>
 
-            <div className="p-4 border-t border-gray-800">
-              <div className="flex gap-2">
+            <div className="p-2 border-t border-gray-800">
+              <div className="flex gap-1.5">
                 <Input
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 transition-transform hover:scale-[1.02] focus:scale-[1.02]"
+                  className="flex-1 h-8 text-sm bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 transition-transform hover:scale-[1.02] focus:scale-[1.02]"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault()
@@ -273,9 +273,9 @@ export function Chatbot() {
                 <Button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isTyping}
-                  className="bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 transition-transform hover:scale-110"
+                  className="h-8 w-8 p-0 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 transition-transform hover:scale-110"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
