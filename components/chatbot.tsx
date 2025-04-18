@@ -3,9 +3,15 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { MessageSquare, X, Minimize2, Maximize2, Send, Bot, User, Loader2, Maximize, Minimize } from "lucide-react"
+import { MessageSquare, X, Minimize2, Maximize2, Send, Bot, User, Loader2, Maximize, Minimize, ChevronDown } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { toast } from "@/components/ui/use-toast"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface Message {
   id: string
@@ -28,6 +34,7 @@ export function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -51,6 +58,23 @@ export function Chatbot() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
+
+  // Update unread count when messages change
+  useEffect(() => {
+    if (isMinimized && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1]
+      if (lastMessage.sender === "bot") {
+        setUnreadCount(prev => prev + 1)
+      }
+    }
+  }, [messages, isMinimized])
+
+  // Reset unread count when chat is opened
+  useEffect(() => {
+    if (!isMinimized) {
+      setUnreadCount(0)
+    }
+  }, [isMinimized])
 
   const handleSendMessage = async () => {
     if (!input.trim()) return
@@ -102,7 +126,7 @@ export function Chatbot() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 rounded-full w-12 h-12 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 shadow-lg hover:shadow-xl transition-all duration-300"
+        className="fixed bottom-4 right-4 rounded-full w-12 h-12 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 shadow-lg hover:shadow-xl transition-all duration-300 animate-float"
       >
         <MessageSquare className="h-6 w-6 text-white" />
       </Button>
@@ -110,135 +134,277 @@ export function Chatbot() {
   }
 
   return (
-    <Card className={`fixed bottom-4 right-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg transition-all duration-300 ${
-      isMinimized ? "h-16" : "h-[500px]"
+    <Card className={`fixed bottom-4 right-4 bg-gray-900/80 dark:bg-gray-950/80 hover:bg-gray-900/95 hover:dark:bg-gray-950/95 backdrop-blur-sm shadow-lg transition-all duration-300 ${
+      isMinimized ? "h-[88px]" : "h-[calc(100vh-2rem)]"
     } ${
       isMaximized ? "w-[calc(100%-2rem)]" : "w-96"
     }`}>
-      <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]">
-            <MessageSquare className="h-5 w-5 text-white" />
-          </div>
-          <span className="font-medium">Chat Assistant</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={() => setIsMaximized(!isMaximized)}
-          >
-            {isMaximized ? (
-              <Minimize className="h-4 w-4" />
-            ) : (
-              <Maximize className="h-4 w-4" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={() => setIsMinimized(!isMinimized)}
-          >
-            {isMinimized ? (
-              <Maximize2 className="h-4 w-4" />
-            ) : (
-              <Minimize2 className="h-4 w-4" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
-            onClick={() => setIsOpen(false)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      {!isMinimized && (
-        <div className="flex flex-col h-[calc(100%-3.5rem)]">
-          <div className="flex-1 p-4 overflow-y-auto">
-            {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-muted-foreground space-y-4">
-                <div className="p-3 rounded-full bg-gray-100 dark:bg-gray-800">
-                  <Bot className="h-8 w-8" />
-                </div>
-                <p className="text-center">How can I help you today?</p>
-                <div className="grid grid-cols-1 gap-2 w-full">
-                  {QUICK_ACTIONS.map((action) => (
-                    <Button
-                      key={action.label}
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={() => handleQuickAction(action.value)}
-                    >
-                      {action.label}
-                    </Button>
-                  ))}
-                </div>
+      {!isMinimized ? (
+        <>
+          <div className="flex items-center justify-between p-3 border-b border-gray-800">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]">
+                <MessageSquare className="h-5 w-5 text-white" />
               </div>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      message.sender === "user" ? "justify-end" : "justify-start"
-                    }`}
-                  >
+              <span className="font-medium text-white">Chat Assistant</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                onClick={() => setIsMaximized(!isMaximized)}
+              >
+                {isMaximized ? (
+                  <Minimize className="h-4 w-4" />
+                ) : (
+                  <Maximize className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                onClick={() => setIsMinimized(!isMinimized)}
+              >
+                {isMinimized ? (
+                  <Maximize2 className="h-4 w-4" />
+                ) : (
+                  <Minimize2 className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex flex-col h-[calc(100%-3.5rem)]">
+            <div className="flex-1 p-4 overflow-y-auto">
+              {messages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-4">
+                  <div className="p-3 rounded-full bg-gray-800">
+                    <Bot className="h-8 w-8" />
+                  </div>
+                  <p className="text-center">How can I help you today?</p>
+                  <div className="grid grid-cols-1 gap-2 w-full">
+                    {QUICK_ACTIONS.map((action) => (
+                      <Button
+                        key={action.label}
+                        variant="outline"
+                        className="w-full justify-start text-white border-gray-700 hover:bg-gray-800 transition-transform hover:scale-[1.02]"
+                        onClick={() => handleQuickAction(action.value)}
+                      >
+                        {action.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {messages.map((message) => (
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 flex items-start gap-2 ${
-                        message.sender === "user"
-                          ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white"
-                          : "bg-gray-100 dark:bg-gray-800"
+                      key={message.id}
+                      className={`flex ${
+                        message.sender === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
-                      {message.sender === "bot" && (
-                        <Bot className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                      )}
-                      {message.sender === "user" && (
-                        <User className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                      )}
-                      <div>
-                        <p>{message.text}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </p>
-                      </div>
-                      {message.status === "sending" && (
-                        <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                      )}
-                    </div>
-                  </div>
-                ))}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="max-w-[80%] rounded-lg p-3 bg-gray-100 dark:bg-gray-800 flex items-center gap-2">
-                      <Bot className="h-5 w-5" />
-                      <div className="flex gap-1">
-                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" />
-                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]" />
-                        <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]" />
+                      <div
+                        className={`max-w-[80%] rounded-lg p-3 flex items-start gap-2 transition-transform hover:scale-[1.02] ${
+                          message.sender === "user"
+                            ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white"
+                            : "bg-gray-800 text-white"
+                        }`}
+                      >
+                        {message.sender === "bot" && (
+                          <Bot className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                        )}
+                        {message.sender === "user" && (
+                          <User className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                        )}
+                        <div>
+                          <p>{message.text}</p>
+                          <p className="text-xs opacity-70 mt-1">
+                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                        {message.status === "sending" && (
+                          <Loader2 className="h-4 w-4 animate-spin ml-2" />
+                        )}
                       </div>
                     </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            )}
-          </div>
+                  ))}
+                  {isTyping && (
+                    <div className="flex justify-start">
+                      <div className="max-w-[80%] rounded-lg p-3 bg-gray-800 text-white flex items-center gap-2">
+                        <Bot className="h-5 w-5" />
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" />
+                          <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]" />
+                          <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </div>
 
-          <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-            <div className="flex gap-2">
+            <div className="p-4 border-t border-gray-800">
+              <div className="flex gap-2">
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Type your message..."
+                  className="flex-1 bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 transition-transform hover:scale-[1.02] focus:scale-[1.02]"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSendMessage()
+                    }
+                  }}
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!input.trim() || isTyping}
+                  className="bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 transition-transform hover:scale-110"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between px-3 h-10">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <div className="p-1 rounded-lg bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]">
+                  <MessageSquare className="h-3.5 w-3.5 text-white" />
+                </div>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#FF4F59] text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="flex items-center gap-1.5 cursor-pointer group">
+                    <span className="text-xs font-medium text-white group-hover:text-[#FF4F59] transition-colors">Chat</span>
+                    <ChevronDown className="h-2.5 w-2.5 text-gray-400 group-hover:text-[#FF4F59] transition-colors" />
+                    {messages.length > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <div className={`p-0.5 rounded-full ${
+                          messages[messages.length - 1].sender === "user" 
+                            ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]" 
+                            : "bg-gray-800"
+                        }`}>
+                          {messages[messages.length - 1].sender === "user" ? (
+                            <User className="h-2.5 w-2.5 text-white" />
+                          ) : (
+                            <Bot className="h-2.5 w-2.5 text-white" />
+                          )}
+                        </div>
+                        <span className="text-[10px] text-gray-400 group-hover:text-gray-300 transition-colors truncate max-w-[120px]">
+                          {messages[messages.length - 1].text}
+                        </span>
+                        <span className="text-[9px] text-gray-500">
+                          {messages[messages.length - 1].timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-80 bg-gray-900 border-gray-800" align="start">
+                  <div className="p-2 border-b border-gray-800">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-white">Recent Messages</span>
+                      <span className="text-xs text-gray-400">{messages.length} total</span>
+                    </div>
+                  </div>
+                  <div className="max-h-60 overflow-y-auto p-2 space-y-2">
+                    {messages.length > 0 ? (
+                      messages.slice(-5).reverse().map((message) => (
+                        <DropdownMenuItem
+                          key={message.id}
+                          className="flex items-start gap-2 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+                          onClick={() => setIsMinimized(false)}
+                        >
+                          <div className={`p-1 rounded-full ${
+                            message.sender === "user" 
+                              ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28]" 
+                              : "bg-gray-800"
+                          }`}>
+                            {message.sender === "user" ? (
+                              <User className="h-3 w-3 text-white" />
+                            ) : (
+                              <Bot className="h-3 w-3 text-white" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-xs text-white">{message.text}</p>
+                            <p className="text-[10px] text-gray-400 mt-0.5">
+                              {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          </div>
+                        </DropdownMenuItem>
+                      ))
+                    ) : (
+                      <div className="text-center py-4">
+                        <p className="text-sm text-gray-400">No messages yet</p>
+                      </div>
+                    )}
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div className="flex items-center gap-0.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                onClick={() => setIsMaximized(!isMaximized)}
+              >
+                {isMaximized ? (
+                  <Minimize className="h-2.5 w-2.5" />
+                ) : (
+                  <Maximize className="h-2.5 w-2.5" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                onClick={() => setIsMinimized(false)}
+              >
+                <Maximize2 className="h-2.5 w-2.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 hover:bg-red-500/20 text-red-400 hover:text-red-400 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-2.5 w-2.5" />
+              </Button>
+            </div>
+          </div>
+          <div className="px-3 h-10 flex items-center mt-1">
+            <div className="flex gap-1.5 w-full">
               <Input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-800"
+                className="flex-1 h-6 text-[10px] bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 focus:border-gray-600 focus:ring-0"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault()
@@ -249,9 +415,9 @@ export function Chatbot() {
               <Button
                 onClick={handleSendMessage}
                 disabled={!input.trim() || isTyping}
-                className="bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90"
+                className="h-6 w-6 p-0 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-2.5 w-2.5" />
               </Button>
             </div>
           </div>
