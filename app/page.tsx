@@ -197,28 +197,28 @@ export default function DashboardPage() {
       {/* Charts Section */}
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
-          <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+          <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg">Revenue Overview</CardTitle>
+                <CardTitle className="text-base">Revenue Overview</CardTitle>
                 <CardDescription className="text-xs">Track your revenue growth and trends</CardDescription>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-[#FF4F59]" />
-                    <span className="text-xs text-muted-foreground">Current</span>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 text-xs">
+                  <div className="flex items-center gap-1">
+                    <div className="h-2 w-2 rounded-full bg-[#FF4F59]" />
+                    <span className="text-muted-foreground">Current</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-[#FF4F59]/20" />
-                    <span className="text-xs text-muted-foreground">Previous</span>
+                  <div className="flex items-center gap-1">
+                    <div className="h-2 w-2 rounded-full bg-[#FF4F59]/20" />
+                    <span className="text-muted-foreground">Previous</span>
                   </div>
                 </div>
                 <Select defaultValue="6m">
-                  <SelectTrigger className="w-[110px] h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <SelectTrigger className="w-[100px] h-7 text-xs">
                     <SelectValue placeholder="Select range" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                  <SelectContent>
                     <SelectItem value="1m">1 Month</SelectItem>
                     <SelectItem value="3m">3 Months</SelectItem>
                     <SelectItem value="6m">6 Months</SelectItem>
@@ -227,35 +227,35 @@ export default function DashboardPage() {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              <div className="space-y-1">
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              <div className="space-y-0.5">
                 <p className="text-xs text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                <p className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
                   ${revenueData.reduce((acc, curr) => acc + curr.revenue, 0).toLocaleString()}
                 </p>
                 <div className="flex items-center gap-1 text-green-500">
-                  <ArrowUpRight className="h-3 w-3" />
-                  <span className="text-xs">+12.5% from previous</span>
+                  <ArrowUpRight className="h-2.5 w-2.5" />
+                  <span className="text-xs">+12.5%</span>
                 </div>
               </div>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">Avg. Monthly Revenue</p>
-                <p className="text-2xl font-bold">
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground">Avg. Monthly</p>
+                <p className="text-xl font-bold">
                   ${Math.round(revenueData.reduce((acc, curr) => acc + curr.revenue, 0) / revenueData.length).toLocaleString()}
                 </p>
-                <p className="text-xs text-muted-foreground">Based on last 6 months</p>
+                <p className="text-xs text-muted-foreground">Last 6 months</p>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <p className="text-xs text-muted-foreground">Total Transactions</p>
-                <p className="text-2xl font-bold">
+                <p className="text-xl font-bold">
                   {revenueData.reduce((acc, curr) => acc + curr.transactions, 0).toLocaleString()}
                 </p>
-                <p className="text-xs text-muted-foreground">{revenueData.length} months period</p>
+                <p className="text-xs text-muted-foreground">{revenueData.length} months</p>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-4">
-            <div className="h-[300px]">
+          <CardContent className="pt-2">
+            <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <defs>
@@ -345,20 +345,48 @@ export default function DashboardPage() {
         </Card>
 
         <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
-          <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+          <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-lg">Expense Breakdown</CardTitle>
+                <CardTitle className="text-base">Expense Breakdown</CardTitle>
                 <CardDescription className="text-xs">Analyze your expense categories</CardDescription>
               </div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+              <div className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
                 $1,200
               </div>
             </div>
+            <div className="grid grid-cols-3 gap-3 mt-3">
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground">Total Expenses</p>
+                <p className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                  ${expenseData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}
+                </p>
+                <div className="flex items-center gap-1 text-green-500">
+                  <ArrowUpRight className="h-2.5 w-2.5" />
+                  <span className="text-xs">+8.5%</span>
+                </div>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground">Largest Category</p>
+                <p className="text-xl font-bold">
+                  {expenseData.reduce((max, curr) => curr.value > max.value ? curr : max).name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  ${Math.max(...expenseData.map(item => item.value)).toLocaleString()}
+                </p>
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-xs text-muted-foreground">Categories</p>
+                <p className="text-xl font-bold">
+                  {expenseData.length}
+                </p>
+                <p className="text-xs text-muted-foreground">Active categories</p>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent className="pt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="h-[250px]">
+          <CardContent className="pt-2">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="h-[180px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
