@@ -344,15 +344,15 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
   // Memoize the table header
   const TableHeader = useCallback(({ column }: { column: TableColumn }) => (
     <th
-      className="px-6 py-4 font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer"
+      className="px-6 py-4 font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer border-b border-gray-200 dark:border-gray-700"
       onClick={() => column.sortable && handleSort(column.key)}
     >
       <div className="flex items-center gap-2">
-        {column.label}
+        <span className="font-semibold">{column.label}</span>
         {column.sortable && (
-          <ChevronsUpDown className="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity" />
+          <ChevronsUpDown className="h-4 w-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors" />
         )}
-          </div>
+      </div>
     </th>
   ), [handleSort])
 
