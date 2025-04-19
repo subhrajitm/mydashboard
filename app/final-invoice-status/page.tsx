@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useCallback } from "react"
+import React, { useState, useMemo, useCallback, useEffect } from "react"
 import { FileText, AlertCircle, CheckCircle2, Clock, TrendingUp, TrendingDown, Download, Filter, Search, Plus, Calendar, SortAsc, X, ChevronRight, ChevronLeft, ArrowUpDown, Eye, Check, ChevronsUpDown, DollarSign } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -28,6 +28,7 @@ import {
   Cell,
 } from "recharts"
 import { format } from "date-fns"
+import { createPortal } from 'react-dom'
 
 interface InvoiceStatus {
   invoiceNumber: string
@@ -266,9 +267,17 @@ interface TableWrapperProps<T> {
   data: T[]
   columns: TableColumn[]
   renderCell: (row: T, column: string) => React.ReactNode
+  activeTab?: string
+  setShowFinished?: (show: boolean) => void
 }
 
-const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrapperProps<T>) => {
+const TableWrapper = <T extends object>({ 
+  data, 
+  columns, 
+  renderCell,
+  activeTab,
+  setShowFinished
+}: TableWrapperProps<T>) => {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(5)
@@ -383,11 +392,33 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
             value={globalFilter}
             onChange={(e) => handleFilterChange(e.target.value)}
           />
-          </div>
+        </div>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           {filteredData.length} results
-          </div>
+        </div>
       </div>
+
+      {/* Finished Message */}
+      {activeTab === 'priority' && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-900 rounded-lg p-8 max-w-md w-full mx-4 text-center">
+            <div className="mb-6">
+              <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto" />
+          </div>
+            <h3 className="text-2xl font-semibold mb-4">Process Completed!</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              The warranty claim process has been successfully completed.
+            </p>
+            <Button
+              variant="default"
+              className="bg-[#FF4F59] text-white hover:bg-[#FF4F59]/90"
+              onClick={() => setShowFinished?.(false)}
+            >
+              Close
+            </Button>
+          </div>
+          </div>
+      )}
 
       <div className="overflow-x-auto rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm">
         <table className="w-full text-sm text-left">
@@ -404,7 +435,7 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
             ))}
           </tbody>
         </table>
-          </div>
+      </div>
 
       {/* Pagination */}
       <div className="flex items-center justify-between px-6 py-4 rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm bg-white/5 dark:bg-gray-800/5">
@@ -449,9 +480,22 @@ const TableWrapper = <T extends object>({ data, columns, renderCell }: TableWrap
 
 export default function FinalInvoiceStatus() {
   const [activeTab, setActiveTab] = useState("invoice")
+  const [showFinished, setShowFinished] = useState(false)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedShop, setSelectedShop] = useState("all")
+
+  // Handle body scroll when modal is open
+  useEffect(() => {
+    if (showFinished) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showFinished])
 
   // Summary statistics
   const summaryStats = [
@@ -554,7 +598,6 @@ export default function FinalInvoiceStatus() {
             }}
           />
         )
-
       case 'warranty':
         return (
           <TableWrapper
@@ -593,7 +636,6 @@ export default function FinalInvoiceStatus() {
             }}
           />
         )
-
       case 'opportunity':
         return (
           <TableWrapper
@@ -638,7 +680,6 @@ export default function FinalInvoiceStatus() {
             }}
           />
         )
-
       case 'recommendations':
         return (
           <TableWrapper
@@ -680,7 +721,6 @@ export default function FinalInvoiceStatus() {
             }}
           />
         )
-
       case 'priority':
         return (
           <TableWrapper
@@ -729,7 +769,7 @@ export default function FinalInvoiceStatus() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setActiveTab('recommendations')}
+                      onClick={() => setShowFinished(true)}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
                       Proceed
@@ -741,8 +781,78 @@ export default function FinalInvoiceStatus() {
             }}
           />
         )
+      default:
+        return null
     }
   }, [activeTab])
+
+  const Modal = () => {
+    if (!showFinished) return null
+
+    return createPortal(
+      <>
+        <div 
+          className="fixed top-0 left-0 w-full h-full bg-black/60 backdrop-blur-sm z-[9998]" 
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            width: '100%', 
+            height: '100%', 
+            overflow: 'hidden',
+            margin: 0,
+            padding: 0
+          }} 
+        />
+        <div 
+          className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-[9999]"
+          style={{ 
+            position: 'fixed', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            width: '100%', 
+            height: '100%', 
+            overflow: 'hidden',
+            margin: 0,
+            padding: 0
+          }}
+        >
+          <div className="relative bg-white/10 dark:bg-gray-900/80 backdrop-blur-xl rounded-xl p-6 max-w-sm w-full mx-4 text-center border border-white/20 dark:border-gray-700/30 shadow-2xl">
+            {/* Decorative elements */}
+            <div className="absolute -top-3 -right-3 w-16 h-16 bg-[#FF4F59]/20 rounded-full blur-2xl" />
+            <div className="absolute -bottom-3 -left-3 w-16 h-16 bg-[#FFAD28]/20 rounded-full blur-2xl" />
+            
+            {/* Content */}
+            <div className="relative z-10">
+              <div className="mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#FF4F59] to-[#FFAD28] shadow-lg">
+                  <CheckCircle2 className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
+                Process Completed!
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 text-base">
+                The warranty claim process has been successfully completed.
+              </p>
+              <Button
+                variant="default"
+                className="bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-4 text-base"
+                onClick={() => setShowFinished(false)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>,
+      document.body
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -849,6 +959,8 @@ export default function FinalInvoiceStatus() {
       <div className="mt-8">
         {renderActiveTable()}
       </div>
+
+      <Modal />
 
       {/* Footer */}
       <footer className="py-6 text-center text-xs text-muted-foreground/60">
