@@ -228,7 +228,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3 mt-3">
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 p-3 rounded-lg border border-white/20 dark:border-gray-700/20 bg-white/15 dark:bg-gray-800/15 backdrop-blur-[1px] hover:border-white/30 dark:hover:border-gray-700/30 transition-colors">
                 <p className="text-xs text-muted-foreground">Total Revenue</p>
                 <p className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
                   ${revenueData.reduce((acc, curr) => acc + curr.revenue, 0).toLocaleString()}
@@ -238,14 +238,14 @@ export default function DashboardPage() {
                   <span className="text-xs">+12.5%</span>
                 </div>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 p-3 rounded-lg border border-white/20 dark:border-gray-700/20 bg-white/15 dark:bg-gray-800/15 backdrop-blur-[1px] hover:border-white/30 dark:hover:border-gray-700/30 transition-colors">
                 <p className="text-xs text-muted-foreground">Avg. Monthly</p>
                 <p className="text-xl font-bold">
                   ${Math.round(revenueData.reduce((acc, curr) => acc + curr.revenue, 0) / revenueData.length).toLocaleString()}
                 </p>
                 <p className="text-xs text-muted-foreground">Last 6 months</p>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 p-3 rounded-lg border border-white/20 dark:border-gray-700/20 bg-white/15 dark:bg-gray-800/15 backdrop-blur-[1px] hover:border-white/30 dark:hover:border-gray-700/30 transition-colors">
                 <p className="text-xs text-muted-foreground">Total Transactions</p>
                 <p className="text-xl font-bold">
                   {revenueData.reduce((acc, curr) => acc + curr.transactions, 0).toLocaleString()}
@@ -356,7 +356,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3 mt-3">
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 p-3 rounded-lg border border-white/20 dark:border-gray-700/20 bg-white/15 dark:bg-gray-800/15 backdrop-blur-[1px] hover:border-white/30 dark:hover:border-gray-700/30 transition-colors">
                 <p className="text-xs text-muted-foreground">Total Expenses</p>
                 <p className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
                   ${expenseData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}
@@ -366,7 +366,7 @@ export default function DashboardPage() {
                   <span className="text-xs">+8.5%</span>
                 </div>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 p-3 rounded-lg border border-white/20 dark:border-gray-700/20 bg-white/15 dark:bg-gray-800/15 backdrop-blur-[1px] hover:border-white/30 dark:hover:border-gray-700/30 transition-colors">
                 <p className="text-xs text-muted-foreground">Largest Category</p>
                 <p className="text-xl font-bold">
                   {expenseData.reduce((max, curr) => curr.value > max.value ? curr : max).name}
@@ -375,7 +375,7 @@ export default function DashboardPage() {
                   ${Math.max(...expenseData.map(item => item.value)).toLocaleString()}
                 </p>
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-0.5 p-3 rounded-lg border border-white/20 dark:border-gray-700/20 bg-white/15 dark:bg-gray-800/15 backdrop-blur-[1px] hover:border-white/30 dark:hover:border-gray-700/30 transition-colors">
                 <p className="text-xs text-muted-foreground">Categories</p>
                 <p className="text-xl font-bold">
                   {expenseData.length}
