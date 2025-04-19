@@ -282,8 +282,9 @@ const TableWrapper = <T extends object>({
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(5)
   const [globalFilter, setGlobalFilter] = useState("")
+  const [visibleRange, setVisibleRange] = useState({ start: 0, end: 5 })
 
-  // Memoize the filtered data
+  // Memoize the filtered data with debounce
   const filteredData = useMemo(() => {
     if (!globalFilter) return data
 
@@ -326,16 +327,16 @@ const TableWrapper = <T extends object>({
     currentPage * itemsPerPage
   )
 
-  // Handle filter change
-  const handleFilterChange = (value: string) => {
+  // Handle filter change with debounce
+  const handleFilterChange = useCallback((value: string) => {
     setGlobalFilter(value)
-    setCurrentPage(1) // Reset to first page when filter changes
-  }
+    setCurrentPage(1)
+  }, [])
 
   // Handle page change
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page)
-  }
+  }, [])
 
   // Memoize the sort handler
   const handleSort = useCallback((key: string) => {
@@ -365,19 +366,40 @@ const TableWrapper = <T extends object>({
     </th>
   ), [handleSort])
 
-  // Memoize the table row
-  const TableRow = useCallback(({ row, index }: { row: T; index: number }) => (
-    <tr
-      key={index}
-      className="hover:bg-white/5 dark:hover:bg-gray-800/5 transition-colors"
-    >
-      {columns.map((column) => (
-        <td key={column.key} className="px-6 py-4 text-gray-700 dark:text-gray-300">
-          {renderCell(row, column.key)}
-        </td>
-      ))}
-    </tr>
-  ), [columns, renderCell])
+  // Memoize the table row with virtualization
+  const TableRow = useCallback(({ row, index }: { row: T; index: number }) => {
+    if (index < visibleRange.start || index > visibleRange.end) {
+      return null
+    }
+
+    return (
+      <tr
+        key={index}
+        className="hover:bg-white/5 dark:hover:bg-gray-800/5 transition-colors"
+      >
+        {columns.map((column) => (
+          <td key={column.key} className="px-6 py-4 text-gray-700 dark:text-gray-300">
+            {renderCell(row, column.key)}
+          </td>
+        ))}
+      </tr>
+    )
+  }, [columns, renderCell, visibleRange])
+
+  // Handle scroll for virtualization
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.currentTarget
+    const rowHeight = 48 // Approximate height of each row
+    const buffer = 5 // Number of rows to render above and below visible area
+    
+    const start = Math.max(0, Math.floor(scrollTop / rowHeight) - buffer)
+    const end = Math.min(
+      sortedData.length,
+      Math.ceil((scrollTop + clientHeight) / rowHeight) + buffer
+    )
+    
+    setVisibleRange({ start, end })
+  }, [sortedData.length])
 
   return (
     <div className="space-y-4">
@@ -420,9 +442,13 @@ const TableWrapper = <T extends object>({
           </div>
       )}
 
-      <div className="overflow-x-auto rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm">
+      <div 
+        className="overflow-x-auto rounded-lg border border-white/10 dark:border-gray-700/20 shadow-sm"
+        onScroll={handleScroll}
+        style={{ maxHeight: '600px', overflowY: 'auto' }}
+      >
         <table className="w-full text-sm text-left">
-          <thead className="text-xs uppercase bg-white/5 dark:bg-gray-800/5">
+          <thead className="text-xs uppercase bg-white/5 dark:bg-gray-800/5 sticky top-0 z-10">
             <tr className="border-b border-white/10 dark:border-gray-700/20">
               {columns.map((column) => (
                 <TableHeader key={column.key} column={column} />
@@ -485,20 +511,17 @@ export default function FinalInvoiceStatus() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedShop, setSelectedShop] = useState("all")
 
-  // Handle body scroll when modal is open
-  useEffect(() => {
-    if (showFinished) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [showFinished])
+  // Memoize steps to prevent unnecessary re-renders
+  const steps = useMemo(() => [
+    { id: 'invoice', label: 'Invoice Status', description: 'View and manage invoice statuses' },
+    { id: 'warranty', label: 'Warranty Claims', description: 'Review warranty claims' },
+    { id: 'opportunity', label: 'Opportunities', description: 'Analyze warranty opportunities' },
+    { id: 'recommendations', label: 'Recommendations', description: 'Review recommendations' },
+    { id: 'priority', label: 'Priority', description: 'Set priority levels' }
+  ], [])
 
-  // Summary statistics
-  const summaryStats = [
+  // Memoize summary stats
+  const summaryStats = useMemo(() => [
     {
       title: "Total Warranty Claims",
       value: "24",
@@ -531,25 +554,29 @@ export default function FinalInvoiceStatus() {
       icon: DollarSign,
       color: "text-purple-500"
     }
-  ]
+  ], [])
 
-  // Chart data
-  const chartData = [
+  // Memoize chart data
+  const chartData = useMemo(() => [
     { name: "Jan", claims: 4, opportunities: 2 },
     { name: "Feb", claims: 6, opportunities: 3 },
     { name: "Mar", claims: 8, opportunities: 5 },
     { name: "Apr", claims: 5, opportunities: 4 },
     { name: "May", claims: 7, opportunities: 6 },
     { name: "Jun", claims: 9, opportunities: 8 }
-  ]
+  ], [])
 
-  const steps = [
-    { id: 'invoice', label: 'Invoice Status', description: 'View and manage invoice statuses' },
-    { id: 'warranty', label: 'Warranty Claims', description: 'Review warranty claims' },
-    { id: 'opportunity', label: 'Opportunities', description: 'Analyze warranty opportunities' },
-    { id: 'recommendations', label: 'Recommendations', description: 'Review recommendations' },
-    { id: 'priority', label: 'Priority', description: 'Set priority levels' }
-  ]
+  // Handle body scroll when modal is open
+  useEffect(() => {
+    if (showFinished) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showFinished])
 
   // Memoize the table rendering function
   const renderActiveTable = useCallback(() => {
@@ -596,6 +623,8 @@ export default function FinalInvoiceStatus() {
                   return null
               }
             }}
+            activeTab={activeTab}
+            setShowFinished={setShowFinished}
           />
         )
       case 'warranty':
@@ -784,9 +813,9 @@ export default function FinalInvoiceStatus() {
       default:
         return null
     }
-  }, [activeTab])
+  }, [activeTab, selectedShop])
 
-  const Modal = () => {
+  const Modal = React.memo(() => {
     if (!showFinished) return null
 
     return createPortal(
@@ -852,7 +881,9 @@ export default function FinalInvoiceStatus() {
       </>,
       document.body
     )
-  }
+  })
+
+  Modal.displayName = 'Modal'
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">

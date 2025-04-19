@@ -23,7 +23,7 @@ import {
   CheckCircle,
   XCircle,
   BarChart3,
-  LineChart,
+  LineChart as LineChartIcon,
   PieChart as PieChartIcon,
   Calendar,
   ChevronDown,
@@ -39,6 +39,8 @@ import {
   Area,
   AreaChart,
   ReferenceLine,
+  Line,
+  ComposedChart,
 } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -167,12 +169,12 @@ const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] 
 };
 
 const resolutionData = [
-  { month: "Jan", days: 5 },
-  { month: "Feb", days: 4 },
-  { month: "Mar", days: 6 },
-  { month: "Apr", days: 3 },
-  { month: "May", days: 4 },
-  { month: "Jun", days: 5 },
+  { month: "Jan", days: 5, target: 4, highPriority: 3, standard: 7 },
+  { month: "Feb", days: 4, target: 4, highPriority: 2, standard: 6 },
+  { month: "Mar", days: 6, target: 4, highPriority: 4, standard: 8 },
+  { month: "Apr", days: 3, target: 4, highPriority: 2, standard: 5 },
+  { month: "May", days: 4, target: 4, highPriority: 3, standard: 6 },
+  { month: "Jun", days: 5, target: 4, highPriority: 3, standard: 7 },
 ]
 
 const recentClaims = [
@@ -346,6 +348,10 @@ export default function WarrantyMetrics() {
     }
   }
 
+  const calculateAverageTAT = () => {
+    return resolutionData.reduce((acc, curr) => acc + curr.days, 0) / resolutionData.length;
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
@@ -431,19 +437,15 @@ export default function WarrantyMetrics() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Credit Paid vs Disallowance Chart */}
             <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
-              <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+              <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="text-lg">
-                      Credit Paid Vs Disallowance
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      Compare credits paid against disallowed amounts by model
-                    </CardDescription>
+                    <CardTitle className="text-base">Credit Paid Vs Disallowance</CardTitle>
+                    <CardDescription className="text-xs">Compare credits paid against disallowed amounts by model</CardDescription>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                      <SelectTrigger className="w-[130px] h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                      <SelectTrigger className="w-[130px] h-7 text-xs bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
                         <SelectValue placeholder="All Categories" />
                       </SelectTrigger>
                       <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
@@ -456,7 +458,7 @@ export default function WarrantyMetrics() {
                       </SelectContent>
                     </Select>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="w-[130px] h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                      <SelectTrigger className="w-[130px] h-7 text-xs bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
                         <SelectValue placeholder="Sort by" />
                       </SelectTrigger>
                       <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
@@ -467,46 +469,53 @@ export default function WarrantyMetrics() {
                     </Select>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  <div className="space-y-1">
+                <div className="grid grid-cols-3 gap-2 mt-3">
+                  <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
                     <p className="text-xs text-muted-foreground">Total Credits Paid</p>
-                    <p className="text-2xl font-bold bg-gradient-to-r from-[#1a237e] to-[#0d47a1] bg-clip-text text-transparent">
-                      ${totalCreditsPaid}M
-                    </p>
-                    <div className="flex items-center gap-1 text-green-500">
-                      <ArrowUpRight className="h-3 w-3" />
-                      <span className="text-xs">+8.5% from previous</span>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-lg font-bold bg-gradient-to-r from-[#1a237e] to-[#0d47a1] bg-clip-text text-transparent">
+                        ${totalCreditsPaid}M
+                      </p>
+                      <div className="flex items-center text-green-500 ml-auto">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span className="text-xs">+8.5%</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
                     <p className="text-xs text-muted-foreground">Total Disallowed</p>
-                    <p className="text-2xl font-bold bg-gradient-to-r from-[#03a9f4] to-[#00bcd4] bg-clip-text text-transparent">
-                      ${totalDisallowed}M
-                    </p>
-                    <p className="text-xs text-muted-foreground">Across all models</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-lg font-bold bg-gradient-to-r from-[#03a9f4] to-[#00bcd4] bg-clip-text text-transparent">
+                        ${totalDisallowed}M
+                      </p>
+                      <p className="text-xs text-muted-foreground ml-auto">All models</p>
+                    </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
                     <p className="text-xs text-muted-foreground">Average Efficiency</p>
-                    <p className="text-2xl font-bold">
-                      {averageEfficiency}%
-                    </p>
-                    <p className="text-xs text-muted-foreground">Claims processed</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-lg font-bold">
+                        {averageEfficiency}%
+                      </p>
+                      <p className="text-xs text-muted-foreground ml-auto">Claims</p>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="pt-4">
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={sortedModelData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" />
-                <XAxis 
+              <CardContent className="pt-3">
+                <div className="h-[200px] w-full bg-white/5 dark:bg-gray-900/5 rounded-lg p-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={sortedModelData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200/20" vertical={false} />
+                      <XAxis 
                         dataKey="model" 
                         fontSize={10} 
                         stroke="currentColor" 
                         strokeOpacity={0.5}
                         tickLine={false}
-                />
-                <YAxis 
+                        height={20}
+                      />
+                      <YAxis 
                         fontSize={10}
                         tickFormatter={(value) => `${value}M`}
                         domain={[0, 600]}
@@ -514,125 +523,217 @@ export default function WarrantyMetrics() {
                         stroke="currentColor"
                         strokeOpacity={0.5}
                         tickLine={false}
-                />
-                <RechartsTooltip content={<CustomTooltip />} />
-                      <Bar 
-                        dataKey="creditsPaid" 
-                        name="Credits Paid" 
-                        fill="#1a237e" 
-                  radius={[4, 4, 0, 0]}
-                />
-                <Bar 
-                        dataKey="disallowedAmount" 
-                        name="Disallowed Amount" 
-                        fill="#03a9f4" 
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-              </CardContent>
-            </Card>
-
-            {/* Resolution Time Chart */}
-            <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
-              <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">Resolution Time</CardTitle>
-                    <CardDescription className="text-xs">Average time to resolve claims</CardDescription>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20"
-                      onClick={() => setShowAvgTAT(!showAvgTAT)}
-                    >
-                      {showAvgTAT ? "Hide Average" : "Show Average"}
-                    </Button>
-          </div>
-      </div>
-              </CardHeader>
-              <CardContent className="pt-4">
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={resolutionData}>
-              <defs>
-                        <linearGradient id="colorDays" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#FFAD28" stopOpacity={0.2}/>
-                          <stop offset="95%" stopColor="#FFAD28" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <XAxis 
-                dataKey="month" 
-                        fontSize={10} 
-                        stroke="currentColor" 
-                        strokeOpacity={0.5}
-                        tickLine={false}
-                        axisLine={false}
-              />
-              <YAxis 
-                        fontSize={10}
-                        stroke="currentColor"
-                        strokeOpacity={0.5}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value} days`}
-                      />
-                      <CartesianGrid 
-                        strokeDasharray="3 3" 
-                        className="stroke-gray-200/20" 
-                        vertical={false}
+                        width={30}
                       />
                       <RechartsTooltip 
                         content={({ active, payload }) => {
                           if (active && payload && payload.length) {
+                            const data = payload[0].payload as ModelData;
                             return (
-                              <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-white/20 dark:border-gray-700/20">
-                                <p className="text-sm font-medium">{payload[0].payload.month}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  Average Resolution Time: {payload[0].value} days
-                                </p>
+                              <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg border border-white/20 dark:border-gray-700/20 text-xs">
+                                <p className="font-medium">{data.model}</p>
+                                <div className="space-y-0.5">
+                                  <p className="text-[#1a237e]">Credits: ${data.creditsPaid}M</p>
+                                  <p className="text-[#03a9f4]">Disallowed: ${data.disallowedAmount}M</p>
+                                  <p className="text-gray-500">Efficiency: {data.efficiency}%</p>
+                                </div>
                               </div>
                             );
                           }
                           return null;
                         }}
-              />
-              <Area 
-                type="monotone" 
+                      />
+                      <Bar 
+                        dataKey="creditsPaid" 
+                        name="Credits Paid" 
+                        fill="#1a237e" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                      <Bar 
+                        dataKey="disallowedAmount" 
+                        name="Disallowed Amount" 
+                        fill="#03a9f4" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Resolution Time Chart */}
+            <Card className="bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20 shadow-lg hover:shadow-xl transition-shadow rounded-xl overflow-hidden">
+              <CardHeader className="pb-1 border-b border-white/10 dark:border-gray-700/10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-sm">Resolution Time</CardTitle>
+                    <CardDescription className="text-xs">Average time to resolve claims</CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Select value={chartType} onValueChange={setChartType}>
+                      <SelectTrigger className="w-[90px] h-6 text-xs bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                        <SelectValue placeholder="Chart Type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                        <SelectItem value="area">Area</SelectItem>
+                        <SelectItem value="line">Line</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-6 text-xs bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20"
+                      onClick={() => setShowAvgTAT(!showAvgTAT)}
+                    >
+                      {showAvgTAT ? "Hide Avg" : "Show Avg"}
+                    </Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 mt-3">
+                  <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                    <p className="text-xs text-muted-foreground">Current Avg</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-lg font-bold bg-gradient-to-r from-[#FFAD28] to-[#FF4F59] bg-clip-text text-transparent">
+                        {resolutionData[resolutionData.length - 1].days}d
+                      </p>
+                      <div className="flex items-center text-green-500 ml-auto">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span className="text-xs">+2.5%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                    <p className="text-xs text-muted-foreground">High Priority</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-lg font-bold bg-gradient-to-r from-[#FF4F59] to-[#03a9f4] bg-clip-text text-transparent">
+                        {resolutionData[resolutionData.length - 1].highPriority}d
+                      </p>
+                      <div className="flex items-center text-red-500 ml-auto">
+                        <ArrowDownRight className="h-3 w-3" />
+                        <span className="text-xs">-1.2%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+                    <p className="text-xs text-muted-foreground">Standard</p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-lg font-bold">
+                        {resolutionData[resolutionData.length - 1].standard}d
+                      </p>
+                      <div className="flex items-center text-green-500 ml-auto">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span className="text-xs">+0.8%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <div className="h-[200px] w-full bg-white/5 dark:bg-gray-900/5 rounded-lg p-1 overflow-hidden">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={resolutionData}
+                      margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                      stackOffset="none"
+                    >
+                      <defs>
+                        <linearGradient id="colorAvg" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#FFAD28" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#FFAD28" stopOpacity={0.1}/>
+                        </linearGradient>
+                        <linearGradient id="colorHigh" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#FF4F59" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#FF4F59" stopOpacity={0.1}/>
+                        </linearGradient>
+                        <linearGradient id="colorStd" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#03a9f4" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="#03a9f4" stopOpacity={0.1}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid 
+                        strokeDasharray="3 3" 
+                        stroke="rgba(0, 0, 0, 0.1)" 
+                        vertical={false}
+                      />
+                      <XAxis 
+                        dataKey="month"
+                        tick={{ fill: 'currentColor', fontSize: 10 }}
+                        axisLine={{ stroke: 'currentColor', strokeOpacity: 0.2 }}
+                        tickLine={false}
+                        height={20}
+                      />
+                      <YAxis 
+                        tick={{ fill: 'currentColor', fontSize: 10 }}
+                        tickFormatter={(value) => `${value}d`}
+                        axisLine={{ stroke: 'currentColor', strokeOpacity: 0.2 }}
+                        tickLine={false}
+                        width={30}
+                        domain={[0, 'dataMax + 2']}
+                      />
+                      <RechartsTooltip 
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg border border-white/20 dark:border-gray-700/20 text-xs">
+                                <p className="font-medium">{label}</p>
+                                <div className="space-y-0.5">
+                                  <p className="text-[#FFAD28]">
+                                    Avg: {payload[0].payload.days}d
+                                  </p>
+                                  <p className="text-[#FF4F59]">
+                                    High: {payload[0].payload.highPriority}d
+                                  </p>
+                                  <p className="text-[#03a9f4]">
+                                    Std: {payload[0].payload.standard}d
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="standard"
+                        stackId="1"
+                        stroke="#03a9f4"
+                        fill="url(#colorStd)"
+                        strokeWidth={1}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="highPriority"
+                        stackId="1"
+                        stroke="#FF4F59"
+                        fill="url(#colorHigh)"
+                        strokeWidth={1}
+                      />
+                      <Area
+                        type="monotone"
                         dataKey="days"
+                        stackId="1"
                         stroke="#FFAD28"
-                        fill="url(#colorDays)"
-                        strokeWidth={2}
-                        dot={{
-                          fill: "#FFAD28",
-                          strokeWidth: 2,
-                          r: 4,
-                        }}
-                        activeDot={{
-                          fill: "#FFAD28",
-                          strokeWidth: 2,
-                          r: 6,
-                        }}
+                        fill="url(#colorAvg)"
+                        strokeWidth={1}
                       />
                       {showAvgTAT && (
                         <ReferenceLine
-                          y={resolutionData.reduce((acc, curr) => acc + curr.days, 0) / resolutionData.length}
+                          y={calculateAverageTAT()}
                           stroke="#FF4F59"
                           strokeDasharray="3 3"
+                          strokeWidth={1}
                           label={{
-                            value: "Average",
+                            value: "Avg",
                             position: "right",
                             fill: "#FF4F59",
                             fontSize: 10,
                           }}
                         />
                       )}
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
           </div>
