@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense, lazy } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -27,6 +27,22 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Lazy load icons
+const HomeIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.Home })))
+const ClipboardCheckIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.ClipboardCheck })))
+const FileTextIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.FileText })))
+const SettingsIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.Settings })))
+const ChevronLeftIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.ChevronLeft })))
+const ChevronRightIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.ChevronRight })))
+const BellIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.Bell })))
+const SearchIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.Search })))
+const SunIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.Sun })))
+const MoonIcon = lazy(() => import('lucide-react').then(mod => ({ default: mod.Moon })))
+
+// Lazy load navigation items
+const NavItem = lazy(() => import('./nav-item'))
 
 const navItems = [
   { 
@@ -56,6 +72,11 @@ const navItems = [
     showBadgeInCompact: true,
   },
 ]
+
+// Loading component for icons
+const IconLoader = () => (
+  <Skeleton className="h-5 w-5 rounded" />
+)
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true)
@@ -156,31 +177,13 @@ export default function Sidebar() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link href={item.href}>
-                  <Button
-                    variant={pathname === item.href ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full justify-start gap-3 transition-all duration-200 hover:bg-white/10 dark:hover:bg-gray-800/10",
-                      isExpanded ? "px-4" : "px-2"
-                    )}
-                    role="menuitem"
-                    aria-current={pathname === item.href ? "page" : undefined}
-                  >
-                    <div className="relative">
-                      <item.icon className="h-5 w-5" aria-hidden="true" />
-                      {item.badge && (isExpanded || item.showBadgeInCompact) && (
-                        <Badge 
-                          variant="secondary" 
-                          className={cn(
-                            "absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]",
-                            !isExpanded && "translate-x-1/2"
-                          )}
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </div>
-                    {isExpanded && <span>{item.label}</span>}
-                  </Button>
+                  <Suspense fallback={<IconLoader />}>
+                    <NavItem
+                      item={item}
+                      isExpanded={isExpanded}
+                      pathname={pathname}
+                    />
+                  </Suspense>
                 </Link>
               </TooltipTrigger>
               {!isExpanded && (
