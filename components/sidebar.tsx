@@ -119,14 +119,8 @@ export default function Sidebar() {
               </div>
             </>
           ) : (
-            <Link href="/" className="relative h-[50px] w-[50px]">
-              <Image
-                src="/genpact-logo-m.svg"
-                alt="Genpact Logo"
-                fill
-                className="object-contain dark:filter-none filter invert"
-                priority
-              />
+            <Link href="/" className="flex items-center justify-center w-[50px] h-[50px]">
+              <span className="text-lg font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">WCA</span>
             </Link>
           )}
         </div>
