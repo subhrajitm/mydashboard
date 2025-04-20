@@ -151,7 +151,7 @@ export default function NotificationsPage() {
           <Card
             key={notification.id}
             className={cn(
-              "group hover:scale-[1.01] transition-all duration-200",
+              "group transition-all duration-200",
               !notification.read && "border-l-2 border-[#FF4F59]"
             )}
           >
