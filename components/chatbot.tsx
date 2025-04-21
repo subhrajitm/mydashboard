@@ -200,22 +200,27 @@ export function Chatbot() {
             </div>
           </div>
           <div className="flex flex-col h-[calc(100%-2.5rem)]">
-            <div className="flex-1 p-2 overflow-y-auto">
+            <div className="flex-1 p-3 overflow-y-auto">
               {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-3">
-                  <div className="p-2 rounded-full bg-gray-800">
-                    <Bot className="h-6 w-6" />
+                <div className="flex flex-col items-center justify-center h-full space-y-3">
+                  <div className="p-2 rounded-full bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/20">
+                    <Bot className="h-6 w-6 text-white/90 dark:text-gray-400" />
                   </div>
-                  <p className="text-center">How can I help you today?</p>
-                  <div className="grid grid-cols-1 gap-1.5 w-full">
+                  <p className="text-center text-base font-medium text-white/90 dark:text-gray-200">How can I help you today?</p>
+                  <div className="grid grid-cols-1 gap-1.5 w-full max-w-md">
                     {QUERY_CATEGORIES.map((category) => (
                       <Button
                         key={category.label}
                         variant="outline"
-                        className="w-full justify-start text-white border-gray-700 hover:bg-gray-800/50 transition-colors duration-200"
+                        className="w-full justify-start text-white/90 dark:text-white border-white/20 dark:border-gray-700/20 hover:bg-white/40 dark:hover:bg-gray-800/50 transition-colors duration-200 py-4 backdrop-blur-sm bg-white/30 dark:bg-gray-800/50"
                         onClick={() => handleQuickAction(category.value)}
                       >
-                        {category.label}
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-white/30 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/20">
+                            <MessageSquare className="h-3.5 w-3.5 text-white/90 dark:text-gray-400" />
+                          </div>
+                          <span className="text-sm">{category.label}</span>
+                        </div>
                       </Button>
                     ))}
                   </div>
@@ -230,38 +235,48 @@ export function Chatbot() {
                       }`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg p-2 flex items-start gap-2 ${
+                        className={`max-w-[85%] rounded-xl p-3 flex items-start gap-2 ${
                           message.sender === "user"
-                            ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white"
-                            : "bg-gray-800 text-white hover:bg-gray-800/90 transition-colors duration-200"
+                            ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white shadow-md"
+                            : "bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm text-white/90 dark:text-white hover:bg-white/40 dark:hover:bg-gray-800/70 transition-colors duration-200 border border-white/20 dark:border-gray-700/20"
                         }`}
                       >
-                        {message.sender === "bot" && (
-                          <Bot className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                        )}
-                        {message.sender === "user" && (
-                          <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                        )}
-                        <div>
-                          <p className="text-sm">{message.text}</p>
-                          <p className="text-[10px] opacity-70 mt-0.5">
+                        <div className={`p-1.5 rounded-full ${
+                          message.sender === "user" 
+                            ? "bg-white/20" 
+                            : "bg-white/30 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/20"
+                        }`}>
+                          {message.sender === "bot" && (
+                            <Bot className="h-3.5 w-3.5 text-white/90 dark:text-gray-400" />
+                          )}
+                          {message.sender === "user" && (
+                            <User className="h-3.5 w-3.5" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm leading-snug">{message.text}</p>
+                          <p className="text-[10px] opacity-80 mt-1">
                             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
                         {message.status === "sending" && (
-                          <Loader2 className="h-3 w-3 animate-spin ml-1" />
+                          <div className="p-1.5 rounded-full bg-white/30 border border-white/20">
+                            <Loader2 className="h-3 w-3 animate-spin text-white/90 dark:text-gray-400" />
+                          </div>
                         )}
                       </div>
                     </div>
                   ))}
                   {isTyping && (
                     <div className="flex justify-start">
-                      <div className="max-w-[80%] rounded-lg p-2 bg-gray-800 text-white flex items-center gap-2">
-                        <Bot className="h-4 w-4" />
+                      <div className="max-w-[85%] rounded-xl p-3 bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm text-white/90 dark:text-white flex items-center gap-2 border border-white/20 dark:border-gray-700/20">
+                        <div className="p-1.5 rounded-full bg-white/30 dark:bg-gray-800/50 border border-white/20 dark:border-gray-700/20">
+                          <Bot className="h-3.5 w-3.5 text-white/90 dark:text-gray-400" />
+                        </div>
                         <div className="flex gap-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-white/80 animate-bounce" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-white/80 animate-bounce [animation-delay:0.2s]" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-white/80 animate-bounce [animation-delay:0.4s]" />
                         </div>
                       </div>
                     </div>
@@ -271,14 +286,14 @@ export function Chatbot() {
               )}
             </div>
 
-            <div className="p-2 border-t border-gray-800">
+            <div className="p-3 border-t border-white/20 dark:border-gray-800/50">
               <div className="flex gap-1.5">
                 <Input
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 h-8 text-sm bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 focus:border-gray-600 focus:ring-0 transition-colors duration-200"
+                  className="flex-1 h-9 text-sm bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm text-white/90 dark:text-white border-white/20 dark:border-gray-700/20 placeholder:text-white/60 dark:placeholder:text-gray-400 focus:border-white/30 dark:focus:border-gray-600/50 focus:ring-0 transition-colors duration-200 rounded-lg"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault()
@@ -289,14 +304,14 @@ export function Chatbot() {
                 <Button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isTyping}
-                  className="h-8 w-8 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
+                  className="h-9 w-9 p-0 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 transition-colors duration-200 rounded-lg"
                 >
                   <Send className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
+                  className="h-9 w-9 p-0 hover:bg-white/40 dark:hover:bg-gray-800/50 text-white/90 dark:text-white transition-colors duration-200 rounded-lg bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm border border-white/20 dark:border-gray-700/20"
                   onClick={handleClearChat}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
