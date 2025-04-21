@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { MessageSquare, X, Minimize2, Maximize2, Send, Bot, User, Loader2, Maximize, Minimize, ChevronDown } from "lucide-react"
+import { MessageSquare, X, Minimize2, Maximize2, Send, Bot, User, Loader2, Maximize, Minimize, ChevronDown, Trash2 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { toast } from "@/components/ui/use-toast"
 import {
@@ -25,6 +25,13 @@ const QUICK_ACTIONS = [
   { label: "View Warranty Claims", value: "Show me my warranty claims" },
   { label: "Check Invoice Status", value: "What's the status of my invoices?" },
   { label: "Get Help", value: "I need help with the dashboard" },
+]
+
+const QUERY_CATEGORIES = [
+  { label: "Contract Queries", value: "I have questions about contracts" },
+  { label: "Invoice Queries", value: "I need information about invoices" },
+  { label: "Business Plan Queries", value: "I want to discuss business plans" },
+  { label: "Claims Queries", value: "I have questions about claims" },
 ]
 
 export function Chatbot() {
@@ -122,6 +129,15 @@ export function Chatbot() {
     }
   }
 
+  const handleClearChat = () => {
+    setMessages([])
+    localStorage.removeItem("chatbot_messages")
+    toast({
+      title: "Chat cleared",
+      description: "Your chat history has been cleared successfully.",
+    })
+  }
+
   if (!isOpen) {
     return (
       <Button
@@ -152,7 +168,7 @@ export function Chatbot() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                className="h-7 w-7 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
                 onClick={() => setIsMaximized(!isMaximized)}
               >
                 {isMaximized ? (
@@ -164,7 +180,7 @@ export function Chatbot() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                className="h-7 w-7 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
                 onClick={() => setIsMinimized(!isMinimized)}
               >
                 {isMinimized ? (
@@ -176,7 +192,7 @@ export function Chatbot() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 hover:bg-gray-800 text-white transition-transform hover:scale-110"
+                className="h-7 w-7 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
                 onClick={() => setIsOpen(false)}
               >
                 <X className="h-3.5 w-3.5" />
@@ -192,14 +208,14 @@ export function Chatbot() {
                   </div>
                   <p className="text-center">How can I help you today?</p>
                   <div className="grid grid-cols-1 gap-1.5 w-full">
-                    {QUICK_ACTIONS.map((action) => (
+                    {QUERY_CATEGORIES.map((category) => (
                       <Button
-                        key={action.label}
+                        key={category.label}
                         variant="outline"
-                        className="w-full justify-start text-white border-gray-700 hover:bg-gray-800 transition-transform hover:scale-[1.02]"
-                        onClick={() => handleQuickAction(action.value)}
+                        className="w-full justify-start text-white border-gray-700 hover:bg-gray-800/50 transition-colors duration-200"
+                        onClick={() => handleQuickAction(category.value)}
                       >
-                        {action.label}
+                        {category.label}
                       </Button>
                     ))}
                   </div>
@@ -214,10 +230,10 @@ export function Chatbot() {
                       }`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg p-2 flex items-start gap-2 transition-transform hover:scale-[1.02] ${
+                        className={`max-w-[80%] rounded-lg p-2 flex items-start gap-2 ${
                           message.sender === "user"
                             ? "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white"
-                            : "bg-gray-800 text-white"
+                            : "bg-gray-800 text-white hover:bg-gray-800/90 transition-colors duration-200"
                         }`}
                       >
                         {message.sender === "bot" && (
@@ -262,7 +278,7 @@ export function Chatbot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 h-8 text-sm bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 transition-transform hover:scale-[1.02] focus:scale-[1.02]"
+                  className="flex-1 h-8 text-sm bg-gray-800 text-white border-gray-700 placeholder:text-gray-400 focus:border-gray-600 focus:ring-0 transition-colors duration-200"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault()
@@ -273,9 +289,17 @@ export function Chatbot() {
                 <Button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isTyping}
-                  className="h-8 w-8 p-0 bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] hover:from-[#FF4F59]/90 hover:to-[#FFAD28]/90 transition-transform hover:scale-110"
+                  className="h-8 w-8 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
                 >
                   <Send className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 hover:bg-gray-800/50 text-white transition-colors duration-200"
+                  onClick={handleClearChat}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>
             </div>
@@ -370,7 +394,7 @@ export function Chatbot() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-5 w-5 p-0 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                className="h-5 w-5 p-0 hover:bg-gray-800/50 text-gray-400 hover:text-white transition-colors duration-200"
                 onClick={() => setIsMaximized(!isMaximized)}
               >
                 {isMaximized ? (
@@ -382,7 +406,7 @@ export function Chatbot() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-5 w-5 p-0 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                className="h-5 w-5 p-0 hover:bg-gray-800/50 text-gray-400 hover:text-white transition-colors duration-200"
                 onClick={() => setIsMinimized(false)}
               >
                 <Maximize2 className="h-2.5 w-2.5" />
