@@ -1,6 +1,6 @@
 "use client"
 
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface RevenueData {
@@ -31,6 +31,27 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 const RevenueChart = memo(({ data }: RevenueChartProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate chart loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="h-[200px] flex items-center justify-center">
+        <div className="animate-pulse flex space-x-4">
+          <div className="h-2 bg-gray-200 rounded w-3/4"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-[200px]">
       <ResponsiveContainer width="100%" height="100%">

@@ -6,10 +6,14 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight, Clock, Activity } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import RevenueChart from "@/components/charts/RevenueChart"
-import ExpensePieChart from "@/components/charts/ExpensePieChart"
+import { Suspense, lazy, useMemo } from "react"
 import StatsCard from "@/components/stats/StatsCard"
 import type { LucideIcon } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Lazy load chart components
+const RevenueChart = lazy(() => import("@/components/charts/RevenueChart"))
+const ExpensePieChart = lazy(() => import("@/components/charts/ExpensePieChart"))
 
 interface Stat {
   title: string
@@ -200,7 +204,9 @@ export default function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent className="pt-2">
-            <RevenueChart data={revenueData} />
+            <Suspense fallback={<Skeleton className="h-[300px] w-full" />}>
+              <RevenueChart data={revenueData} />
+            </Suspense>
           </CardContent>
         </Card>
 
@@ -218,7 +224,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="pt-2">
             <div className="grid grid-cols-2 gap-3">
-              <ExpensePieChart data={expenseData} colors={COLORS} />
+              <Suspense fallback={<Skeleton className="h-[200px] w-full" />}>
+                <ExpensePieChart data={expenseData} colors={COLORS} />
+              </Suspense>
               <div className="space-y-3">
                 {expenseData.map((item) => {
                   const percentage = ((item.value / expenseData.reduce((acc, curr) => acc + curr.value, 0)) * 100).toFixed(1)

@@ -1,6 +1,6 @@
 "use client"
 
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 interface ExpenseData {
@@ -33,6 +33,27 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 
 const ExpensePieChart = memo(({ data, colors }: ExpensePieChartProps) => {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Simulate chart loading
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="h-[180px] flex items-center justify-center">
+        <div className="animate-pulse flex space-x-4">
+          <div className="h-2 bg-gray-200 rounded w-3/4"></div>
+        </div>
+      </div>
+    )
+  }
+
   const total = data.reduce((acc, curr) => acc + curr.value, 0)
   const dataWithTotal = data.map(item => ({ ...item, total }))
 
