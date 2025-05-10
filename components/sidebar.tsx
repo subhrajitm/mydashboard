@@ -35,14 +35,6 @@ const navItems = [
     label: "Dashboard", 
     href: "/",
   },
-  { 
-    id: "notifications", 
-    icon: Bell, 
-    label: "Notifications", 
-    href: "/notifications",
-    badge: 5,
-    showBadgeInCompact: true,
-  },
 ]
 
 export default function Sidebar() {
@@ -66,7 +58,14 @@ export default function Sidebar() {
       className={cn(
         "h-screen flex flex-col transition-all duration-300 ease-in-out",
         isExpanded ? "w-72" : "w-20",
-        "bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl"
+        "bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl",
+        "border-r border-white/5 dark:border-gray-700/5",
+        "shadow-[2px_0_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_8px_-2px_rgba(0,0,0,0.2)]",
+        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/30 after:to-transparent dark:after:via-gray-400/30",
+        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/10 before:to-transparent",
+        "[&:before]:transition-opacity [&:before]:duration-300 [&:before]:hover:opacity-50",
+        "[&:after]:transition-opacity [&:after]:duration-300 [&:after]:hover:opacity-70",
+        "hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.07)] dark:hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.25)] transition-shadow duration-300"
       )}
       role="navigation"
       aria-label="Main navigation"
@@ -74,22 +73,22 @@ export default function Sidebar() {
       {/* Enhanced glassy gradient background */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {/* Base glass effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent dark:from-gray-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-transparent dark:from-gray-900/30 dark:via-gray-900/10" />
         
         {/* Animated diagonal patterns */}
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,#FF4F59/5_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern" />
-        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,#FFAD28/5_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern" style={{ animationDelay: '1s' }} />
+        <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,#FF4F59/3_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern opacity-50" />
+        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,#FFAD28/3_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern opacity-50" style={{ animationDelay: '1s' }} />
         
         {/* Subtle noise texture */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-10" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-5" />
         
         {/* Enhanced glowing highlights */}
-        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-[#FF4F59]/10 to-transparent blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-[#FFAD28]/10 to-transparent blur-3xl" />
+        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-[#FF4F59]/5 to-transparent blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-[#FFAD28]/5 to-transparent blur-3xl" />
       </div>
 
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-3 border-b border-white/10 dark:border-gray-700/10">
+      <div className="flex items-center justify-between h-[57px] p-3 border-b border-white/10 dark:border-gray-700/10 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent dark:after:via-gray-400/20">
         <div className="flex items-center gap-3">
           {isExpanded ? (
             <div className="flex items-center">
@@ -113,19 +112,6 @@ export default function Sidebar() {
         </Button>
       </div>
 
-      {/* Search Bar */}
-      {isExpanded && (
-        <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground/80" />
-            <Input
-              placeholder="Search..."
-              className="pl-9 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl"
-            />
-          </div>
-        </div>
-      )}
-
       {/* Navigation Items */}
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => (
@@ -144,17 +130,6 @@ export default function Sidebar() {
                   >
                     <div className="relative">
                       <item.icon className="h-5 w-5" aria-hidden="true" />
-                      {item.badge && (isExpanded || item.showBadgeInCompact) && (
-                        <Badge 
-                          variant="secondary" 
-                          className={cn(
-                            "absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]",
-                            !isExpanded && "translate-x-1/2"
-                          )}
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
                     </div>
                     {isExpanded && <span>{item.label}</span>}
                   </Button>

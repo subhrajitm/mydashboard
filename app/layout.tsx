@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import Sidebar from "@/components/sidebar"
+import Header from "@/components/header"
 import { Inter } from "next/font/google"
 import { Chatbot } from "@/components/chatbot"
 import { cn } from "@/lib/utils"
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'WCA Dashboard',
+  title: 'Warrity Dashboard',
   description: 'A modern financial dashboard for managing warranty metrics and invoices',
 }
 
@@ -24,11 +25,14 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="flex h-screen">
             <Sidebar />
-            <main className="flex-1 overflow-y-auto bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl">
-              <div className="h-full p-6">
-                {children}
-              </div>
-            </main>
+            <div className="flex-1 flex flex-col">
+              <Header />
+              <main className="flex-1 overflow-y-auto bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl">
+                <div className="h-full p-6">
+                  {children}
+                </div>
+              </main>
+            </div>
           </div>
           <Chatbot />
         </ThemeProvider>
