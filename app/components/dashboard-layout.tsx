@@ -32,18 +32,6 @@ const navItems = [
     href: "/",
   },
   { 
-    id: "warranty", 
-    icon: ClipboardCheck, 
-    label: "Warranty Metrics", 
-    href: "/warranty-metrics",
-  },
-  { 
-    id: "invoice", 
-    icon: FileText, 
-    label: "Final Invoice Status", 
-    href: "/final-invoice-status",
-  },
-  { 
     id: "settings", 
     icon: Settings, 
     label: "Settings", 
@@ -111,12 +99,9 @@ function Sidebar({ isDarkMode, setIsDarkMode, currentTheme }: {
       {/* Logo/Header */}
       <div className="flex flex-col items-center space-y-4 w-full px-6">
         {isSidebarExpanded && (
-          <div className="flex items-center space-x-3 w-full">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#FF4F59] to-[#FFAD28] flex items-center justify-center rounded-xl shadow-lg">
-              <div className="w-7 h-7 border-2 border-white rounded-lg"></div>
-            </div>
+          <div className="flex items-center justify-center w-full">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">
-              FinDash
+              Warrity
             </h1>
           </div>
         )}
@@ -135,48 +120,52 @@ function Sidebar({ isDarkMode, setIsDarkMode, currentTheme }: {
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col items-center space-y-2 w-full px-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(
-                "flex items-center w-full py-3 px-4 rounded-xl transition-all duration-200 group",
-                isActive 
-                  ? "bg-gradient-to-r from-[#FF4F59]/10 to-[#FFAD28]/10" 
-                  : "hover:bg-[#444744]/10"
-              )}
-            >
-              <div 
-                className={cn(
-                  "p-2 rounded-lg transition-all duration-200",
-                  isActive 
-                    ? "bg-gradient-to-br from-[#FF4F59] to-[#FFAD28]" 
-                    : "bg-[#444744]/20 group-hover:bg-[#444744]/30"
-                )}
-              >
-                <item.icon 
+      <nav className="flex flex-col items-center w-full px-4">
+        <div className="space-y-4 w-full">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <div key={item.id} className="mb-4 w-full">
+                <Link
+                  href={item.href}
                   className={cn(
-                    "h-5 w-5",
-                    isActive ? "text-white" : "text-gray-600"
-                  )} 
-                />
-              </div>
-              {isSidebarExpanded && (
-                <span 
-                  className={cn(
-                    "ml-3 font-medium transition-all duration-200",
-                    isActive ? "text-gray-900" : "text-gray-600"
+                    "flex items-center w-full py-3 px-4 rounded-xl transition-all duration-200 group",
+                    "border border-gray-200/80 dark:border-gray-700/80 shadow-sm",
+                    isActive 
+                      ? "bg-gradient-to-r from-[#FF4F59]/10 to-[#FFAD28]/10" 
+                      : "hover:bg-[#444744]/10"
                   )}
                 >
-                  {item.label}
-                </span>
-              )}
-            </Link>
-          )
-        })}
+                  <div 
+                    className={cn(
+                      "p-2 rounded-lg transition-all duration-200",
+                      isActive 
+                        ? "bg-gradient-to-br from-[#FF4F59] to-[#FFAD28]" 
+                        : "bg-[#444744]/20 group-hover:bg-[#444744]/30"
+                    )}
+                  >
+                    <item.icon 
+                      className={cn(
+                        "h-5 w-5",
+                        isActive ? "text-white" : "text-gray-600"
+                      )} 
+                    />
+                  </div>
+                  {isSidebarExpanded && (
+                    <span 
+                      className={cn(
+                        "ml-3 font-medium transition-all duration-200",
+                        isActive ? "text-gray-900" : "text-gray-600"
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  )}
+                </Link>
+              </div>
+            )
+          })}
+        </div>
       </nav>
 
       {/* Theme Toggle and User Profile */}

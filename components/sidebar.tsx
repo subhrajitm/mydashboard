@@ -36,18 +36,6 @@ const navItems = [
     href: "/",
   },
   { 
-    id: "warranty", 
-    icon: ClipboardCheck, 
-    label: "Warranty Metrics", 
-    href: "/warranty-metrics",
-  },
-  { 
-    id: "invoice", 
-    icon: FileText, 
-    label: "Final Invoice Status", 
-    href: "/final-invoice-status",
-  },
-  { 
     id: "notifications", 
     icon: Bell, 
     label: "Notifications", 
@@ -102,25 +90,14 @@ export default function Sidebar() {
 
       {/* Sidebar Header */}
       <div className="flex items-center justify-between p-3 border-b border-white/10 dark:border-gray-700/10">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center">
           {isExpanded ? (
-            <>
-              <Link href="/" className="relative h-[50px] w-32">
-                <Image
-                  src="/genpact-logo.svg"
-                  alt="Genpact Logo"
-                  fill
-                  className="object-contain dark:filter-none filter invert"
-                  priority
-                />
-              </Link>
-              <div className="flex items-center">
-                <span className="text-base font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">WCA</span>
-              </div>
-            </>
+            <div className="flex items-center justify-center">
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">Warrity</span>
+            </div>
           ) : (
             <Link href="/" className="flex items-center justify-center w-[50px] h-[50px]">
-              <span className="text-lg font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">WCA</span>
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">W</span>
             </Link>
           )}
         </div>
@@ -150,47 +127,52 @@ export default function Sidebar() {
       )}
 
       {/* Navigation Items */}
-      <nav className="flex-1 p-4 space-y-2">
-        {navItems.map((item) => (
-          <TooltipProvider key={item.id}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href={item.href}>
-                  <Button
-                    variant={pathname === item.href ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full justify-start gap-3 transition-all duration-200 hover:bg-white/10 dark:hover:bg-gray-800/10",
-                      isExpanded ? "px-4" : "px-2"
-                    )}
-                    role="menuitem"
-                    aria-current={pathname === item.href ? "page" : undefined}
-                  >
-                    <div className="relative">
-                      <item.icon className="h-5 w-5" aria-hidden="true" />
-                      {item.badge && (isExpanded || item.showBadgeInCompact) && (
-                        <Badge 
-                          variant="secondary" 
-                          className={cn(
-                            "absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]",
-                            !isExpanded && "translate-x-1/2"
+      <nav className="flex-1 p-4">
+        <div className="space-y-4">
+          {navItems.map((item) => (
+            <div key={item.id} className="mb-4">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link href={item.href}>
+                      <Button
+                        variant={pathname === item.href ? "secondary" : "ghost"}
+                        className={cn(
+                          "w-full justify-start gap-3 transition-all duration-200 hover:bg-white/10 dark:hover:bg-gray-800/10",
+                          "rounded-xl border border-gray-200/80 dark:border-gray-700/80 shadow-sm",
+                          isExpanded ? "px-4" : "px-2"
+                        )}
+                        role="menuitem"
+                        aria-current={pathname === item.href ? "page" : undefined}
+                      >
+                        <div className="relative">
+                          <item.icon className="h-5 w-5" aria-hidden="true" />
+                          {item.badge && (isExpanded || item.showBadgeInCompact) && (
+                            <Badge 
+                              variant="secondary" 
+                              className={cn(
+                                "absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px]",
+                                !isExpanded && "translate-x-1/2"
+                              )}
+                            >
+                              {item.badge}
+                            </Badge>
                           )}
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </div>
-                    {isExpanded && <span>{item.label}</span>}
-                  </Button>
-                </Link>
-              </TooltipTrigger>
-              {!isExpanded && (
-                <TooltipContent side="right">
-                  <p>{item.label}</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
-          </TooltipProvider>
-        ))}
+                        </div>
+                        {isExpanded && <span>{item.label}</span>}
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  {!isExpanded && (
+                    <TooltipContent side="right">
+                      <p>{item.label}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          ))}
+        </div>
       </nav>
 
       {/* Sidebar Footer */}
