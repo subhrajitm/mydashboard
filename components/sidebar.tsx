@@ -36,18 +36,6 @@ const navItems = [
     href: "/",
   },
   { 
-    id: "warranty", 
-    icon: ClipboardCheck, 
-    label: "Warranty Metrics", 
-    href: "/warranty-metrics",
-  },
-  { 
-    id: "invoice", 
-    icon: FileText, 
-    label: "Final Invoice Status", 
-    href: "/final-invoice-status",
-  },
-  { 
     id: "notifications", 
     icon: Bell, 
     label: "Notifications", 
@@ -104,30 +92,13 @@ export default function Sidebar() {
       <div className="flex items-center justify-between p-3 border-b border-white/10 dark:border-gray-700/10">
         <div className="flex items-center gap-3">
           {isExpanded ? (
-            <>
-              <Link href="/" className="relative h-[50px] w-32">
-                <Image
-                  src="/genpact-logo.svg"
-                  alt="Genpact Logo"
-                  fill
-                  className="object-contain dark:filter-none filter invert"
-                  priority
-                />
-              </Link>
-              <div className="flex items-center">
-                <span className="text-base font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">WCA</span>
-              </div>
-            </>
+            <div className="flex items-center">
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">Warrity</span>
+            </div>
           ) : (
-            <Link href="/" className="relative h-[50px] w-[50px]">
-              <Image
-                src="/genpact-logo-m.svg"
-                alt="Genpact Logo"
-                fill
-                className="object-contain dark:filter-none filter invert"
-                priority
-              />
-            </Link>
+            <div className="flex items-center">
+              <span className="text-xl font-bold bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] bg-clip-text text-transparent">W</span>
+            </div>
           )}
         </div>
         <Button
