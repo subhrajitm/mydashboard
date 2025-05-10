@@ -59,12 +59,12 @@ export default function Sidebar() {
         "h-screen flex flex-col transition-all duration-300 ease-in-out",
         isExpanded ? "w-72" : "w-20",
         "bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl",
-        "border-r border-white/5 dark:border-gray-700/5",
+        "border-r border-white/10 dark:border-gray-700/5",
         "shadow-[2px_0_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_8px_-2px_rgba(0,0,0,0.2)]",
-        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/20 after:to-transparent dark:after:via-gray-400/20",
-        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/5 before:to-transparent",
-        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/20",
-        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/40 dark:[&:after]:hover:via-gray-400/40",
+        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/40 after:to-transparent dark:after:via-gray-400/20",
+        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/15 before:to-transparent",
+        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/30",
+        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/60 dark:[&:after]:hover:via-gray-400/40",
         "hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.07)] dark:hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.25)] transition-shadow duration-300",
         "group"
       )}
