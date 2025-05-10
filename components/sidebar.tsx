@@ -61,11 +61,12 @@ export default function Sidebar() {
         "bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl",
         "border-r border-white/5 dark:border-gray-700/5",
         "shadow-[2px_0_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_8px_-2px_rgba(0,0,0,0.2)]",
-        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/30 after:to-transparent dark:after:via-gray-400/30",
-        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/10 before:to-transparent",
-        "[&:before]:transition-opacity [&:before]:duration-300 [&:before]:hover:opacity-50",
-        "[&:after]:transition-opacity [&:after]:duration-300 [&:after]:hover:opacity-70",
-        "hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.07)] dark:hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.25)] transition-shadow duration-300"
+        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/20 after:to-transparent dark:after:via-gray-400/20",
+        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/5 before:to-transparent",
+        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/20",
+        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/40 dark:[&:after]:hover:via-gray-400/40",
+        "hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.07)] dark:hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.25)] transition-shadow duration-300",
+        "group"
       )}
       role="navigation"
       aria-label="Main navigation"
@@ -83,8 +84,8 @@ export default function Sidebar() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-5" />
         
         {/* Enhanced glowing highlights */}
-        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-[#FF4F59]/5 to-transparent blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-[#FFAD28]/5 to-transparent blur-3xl" />
+        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-[#FF4F59]/5 to-transparent blur-3xl group-hover:from-[#FF4F59]/10 transition-all duration-500" />
+        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-[#FFAD28]/5 to-transparent blur-3xl group-hover:from-[#FFAD28]/10 transition-all duration-500" />
       </div>
 
       {/* Sidebar Header */}
