@@ -89,7 +89,16 @@ export default function Sidebar() {
       </div>
 
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between h-[57px] p-3 border-b border-white/10 dark:border-gray-700/10 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent dark:after:via-gray-400/20">
+      <div className={cn(
+        "flex items-center justify-between h-[57px] p-3 relative",
+        "border-b border-white/20 dark:border-gray-700/5",
+        "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-white/60 after:to-transparent dark:after:via-gray-400/20",
+        "before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-[#FF4F59]/25 before:to-transparent",
+        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/50",
+        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/80 dark:[&:after]:hover:via-gray-400/40",
+        "group hover:after:opacity-100 hover:before:opacity-100",
+        "after:opacity-70 before:opacity-70"
+      )}>
         <div className="flex items-center gap-3">
           {isExpanded ? (
             <div className="flex items-center">
@@ -106,7 +115,7 @@ export default function Sidebar() {
           size="icon"
           onClick={() => setIsExpanded(!isExpanded)}
           onKeyDown={(e) => handleKeyDown(e, () => setIsExpanded(!isExpanded))}
-          className="h-7 w-7 hover:bg-[#FF4F59]/10"
+          className="h-7 w-7 hover:bg-[#FF4F59]/10 transition-colors duration-200"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         >
           {isExpanded ? <ChevronLeft className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}

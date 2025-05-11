@@ -23,7 +23,16 @@ export default function Header() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-5" />
       </div>
 
-      <div className="flex items-center justify-between h-[57px] px-6 border-b border-white/10 dark:border-gray-700/10 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent dark:after:via-gray-400/20">
+      <div className={cn(
+        "flex items-center justify-between h-[57px] px-6 relative",
+        "border-b border-white/20 dark:border-gray-700/5",
+        "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-white/60 after:to-transparent dark:after:via-gray-400/20",
+        "before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[1px] before:bg-gradient-to-r before:from-transparent before:via-[#FF4F59]/25 before:to-transparent",
+        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/50",
+        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/80 dark:[&:after]:hover:via-gray-400/40",
+        "group hover:after:opacity-100 hover:before:opacity-100",
+        "after:opacity-70 before:opacity-70"
+      )}>
         {/* Search Bar */}
         <div className="flex-1 max-w-md">
           <div className="relative group">
