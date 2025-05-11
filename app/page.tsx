@@ -8,6 +8,7 @@ import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, Ar
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState, useEffect } from "react"
+import "./dashboard.css"
 
 const stats = [
   {
@@ -199,32 +200,26 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF4F59]"></div>
+        <div className="loading-spinner h-12 w-12"></div>
       </div>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="dashboard-container">
       {/* Header Section */}
-      <div className="relative rounded-2xl overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute inset-0 -z-10">
-          {/* Gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#FF4F59]/5 via-[#FFAD28]/5 to-transparent" />
-          
-          {/* Animated diagonal patterns */}
-          <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,#FF4F59/5_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern" />
-          <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,#FFAD28/5_50%,transparent_52%)] bg-[length:200px_200px] animate-pattern" style={{ animationDelay: '1s' }} />
-          
-          {/* Subtle noise texture */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjAuNCIvPjwvc3ZnPg==')] opacity-10" />
+      <div className="header-section">
+        <div className="header-background">
+          <div className="gradient-bg" />
+          <div className="pattern-bg" />
+          <div className="pattern-bg pattern-bg-delayed" />
+          <div className="noise-texture" />
         </div>
 
-        <div className="flex flex-col space-y-4 p-6 bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+        <div className="header-content">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#FF4F59] via-[#FFAD28] to-[#4F46E5] bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold gradient-text">
                 Dashboard Overview
               </h1>
               <p className="text-sm text-muted-foreground/80 max-w-2xl">
@@ -232,11 +227,11 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-2xl">
+              <Button variant="outline" size="sm" className="blur-backdrop">
                 <Calendar className="h-4 w-4 mr-2" />
                 Last 30 Days
               </Button>
-              <Button variant="outline" size="sm" className="bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10 rounded-2xl">
+              <Button variant="outline" size="sm" className="blur-backdrop">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter View
               </Button>
@@ -244,7 +239,7 @@ export default function DashboardPage() {
           </div>
           
           {/* Quick Stats Summary */}
-          <div className="flex items-center space-x-6 pt-4 border-t border-white/10 dark:border-gray-700/10">
+          <div className="flex items-center space-x-6 pt-4 border-t border-white/10">
             <div className="flex items-center space-x-2">
               <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
               <span className="text-xs text-muted-foreground/80">Revenue Up 20.1%</span>
@@ -262,19 +257,19 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="stats-grid">
         {stats.map((stat) => (
-          <Card key={stat.title} className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
+          <Card key={stat.title} className="card hover-scale">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground/80">
                 {stat.title}
               </CardTitle>
-              <div className="h-8 w-8 rounded-full bg-white/10 dark:bg-gray-800/10 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">
                 <stat.icon className="h-4 w-4 text-muted-foreground/80" />
               </div>
             </CardHeader>
             <CardContent className="pt-2">
-              <div className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+              <div className="text-xl font-bold gradient-text">
                 {stat.value}
               </div>
               <div className="flex items-center space-x-2 mt-1">
@@ -293,7 +288,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="charts-grid">
         <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
           <CardHeader className="pb-2 border-b border-white/10 dark:border-gray-700/10">
             <div className="flex items-center justify-between">
@@ -563,8 +558,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Transactions */}
-      <Card className="bg-white/20 dark:bg-gray-800/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/20">
-        <CardHeader className="pb-4 border-b border-white/10 dark:border-gray-700/10">
+      <Card className="card">
+        <CardHeader className="pb-4 border-b border-white/10">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg">Recent Transactions</CardTitle>
@@ -575,10 +570,10 @@ export default function DashboardPage() {
                 <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search transactions..."
-                  className="pl-8 h-8 w-[200px] bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10"
+                  className="pl-8 h-8 w-[200px] blur-backdrop"
                 />
               </div>
-              <Button variant="outline" size="sm" className="h-8 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10">
+              <Button variant="outline" size="sm" className="h-8 blur-backdrop">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
               </Button>
@@ -588,16 +583,13 @@ export default function DashboardPage() {
         <CardContent className="pt-4">
           <div className="space-y-3">
             {transactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="group flex items-center justify-between p-4 rounded-lg bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm hover:bg-white/20 dark:hover:bg-gray-800/20 transition-all duration-200 cursor-pointer"
-              >
+              <div key={transaction.id} className="transaction-item">
                 <div className="flex items-center space-x-4">
-                  <div className="h-10 w-10 rounded-full bg-white/10 dark:bg-gray-800/10 flex items-center justify-center group-hover:bg-white/20 dark:group-hover:bg-gray-800/20 transition-colors">
-                    <transaction.icon className="h-5 w-5 text-muted-foreground/80 group-hover:text-[#FF4F59] transition-colors" />
+                  <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+                    <transaction.icon className="h-5 w-5 text-muted-foreground/80" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium group-hover:text-[#FF4F59] transition-colors">{transaction.description}</p>
+                    <p className="text-sm font-medium">{transaction.description}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <p className="text-xs text-muted-foreground/80">{transaction.date}</p>
                       <span className="text-xs text-muted-foreground/80">•</span>
@@ -610,14 +602,10 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-sm font-medium group-hover:text-[#FF4F59] transition-colors">{transaction.amount}</p>
+                    <p className="text-sm font-medium">{transaction.amount}</p>
                     <Badge
                       variant={transaction.status === "Completed" ? "default" : "secondary"}
-                      className={`mt-1 text-xs ${
-                        transaction.status === "Completed" 
-                          ? "bg-green-500/10 text-green-500 border-green-500/20" 
-                          : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-                      }`}
+                      className={`status-badge ${transaction.status.toLowerCase()}`}
                     >
                       {transaction.status}
                     </Badge>
@@ -625,7 +613,7 @@ export default function DashboardPage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20 dark:hover:bg-gray-800/20"
+                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <ArrowUpRight className="h-4 w-4" />
                   </Button>
@@ -638,7 +626,7 @@ export default function DashboardPage() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs h-7 px-2 hover:bg-white/10 dark:hover:bg-gray-800/10"
+              className="text-xs h-7 px-2 hover:bg-white/10"
             >
               View All
             </Button>
