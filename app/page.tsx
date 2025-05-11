@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react"
+import { Search, Calendar, Filter, TrendingUp, Users, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight, Clock, AlertCircle } from "lucide-react"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState, useEffect } from "react"
 
 const stats = [
   {
@@ -106,6 +107,103 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState([
+    {
+      title: "Total Revenue",
+      value: "$45,231.89",
+      description: "+20.1% from last month",
+      icon: TrendingUp,
+      trend: "up",
+    },
+    {
+      title: "Active Users",
+      value: "2,350",
+      description: "+180.1% from last month",
+      icon: Users,
+      trend: "up",
+    },
+    {
+      title: "Total Expenses",
+      value: "$12,234.00",
+      description: "+19% from last month",
+      icon: DollarSign,
+      trend: "up",
+    },
+    {
+      title: "Pending Invoices",
+      value: "12",
+      description: "+2 from last month",
+      icon: CreditCard,
+      trend: "down",
+    },
+  ])
+
+  const [revenueData, setRevenueData] = useState([
+    { name: "Jan", revenue: 4000, previousRevenue: 3200, transactions: 156 },
+    { name: "Feb", revenue: 3000, previousRevenue: 2800, transactions: 142 },
+    { name: "Mar", revenue: 5000, previousRevenue: 4100, transactions: 189 },
+    { name: "Apr", revenue: 2780, previousRevenue: 2400, transactions: 134 },
+    { name: "May", revenue: 1890, previousRevenue: 2100, transactions: 116 },
+    { name: "Jun", revenue: 2390, previousRevenue: 2000, transactions: 125 },
+  ])
+
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // Function to fetch data
+  const fetchData = async () => {
+    try {
+      setIsLoading(true)
+      // TODO: Replace with actual API calls
+      // const response = await fetch('/api/dashboard')
+      // const data = await response.json()
+      // setStats(data.stats)
+      // setRevenueData(data.revenueData)
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setIsLoading(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch data')
+      setIsLoading(false)
+    }
+  }
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  // Set up periodic data refresh
+  useEffect(() => {
+    const interval = setInterval(fetchData, 300000) // Refresh every 5 minutes
+    return () => clearInterval(interval)
+  }, [])
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Card className="p-6">
+          <div className="flex flex-col items-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-[#FF4F59]" />
+            <h2 className="text-2xl font-bold">Error Loading Dashboard</h2>
+            <p className="text-muted-foreground">{error}</p>
+            <Button onClick={fetchData}>Try Again</Button>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF4F59]"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header Section */}
