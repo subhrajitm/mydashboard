@@ -59,12 +59,12 @@ export default function Sidebar() {
         "h-screen flex flex-col transition-all duration-300 ease-in-out",
         isExpanded ? "w-72" : "w-20",
         "bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl",
-        "border-r border-white/10 dark:border-gray-700/5",
+        "border-r border-white/20 dark:border-gray-700/5",
         "shadow-[2px_0_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_8px_-2px_rgba(0,0,0,0.2)]",
-        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/40 after:to-transparent dark:after:via-gray-400/20",
-        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/15 before:to-transparent",
-        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/30",
-        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/60 dark:[&:after]:hover:via-gray-400/40",
+        "after:absolute after:right-0 after:top-0 after:h-full after:w-[1px] after:bg-gradient-to-b after:from-transparent after:via-white/60 after:to-transparent dark:after:via-gray-400/20",
+        "before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-[#FF4F59]/25 before:to-transparent",
+        "[&:before]:transition-all [&:before]:duration-500 [&:before]:hover:opacity-100 [&:before]:hover:via-[#FF4F59]/50",
+        "[&:after]:transition-all [&:after]:duration-500 [&:after]:hover:opacity-100 [&:after]:hover:via-white/80 dark:[&:after]:hover:via-gray-400/40",
         "hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.07)] dark:hover:shadow-[4px_0_12px_-3px_rgba(0,0,0,0.25)] transition-shadow duration-300",
         "group"
       )}
@@ -114,44 +114,55 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-3 space-y-1.5">
         {navItems.map((item) => (
-          <TooltipProvider key={item.id}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href={item.href}>
-                  <Button
-                    variant={pathname === item.href ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full justify-start gap-3 transition-all duration-200 hover:bg-white/10 dark:hover:bg-gray-800/10",
-                      isExpanded ? "px-4" : "px-2"
-                    )}
-                    role="menuitem"
-                    aria-current={pathname === item.href ? "page" : undefined}
-                  >
-                    <div className="relative">
-                      <item.icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    {isExpanded && <span>{item.label}</span>}
-                  </Button>
-                </Link>
-              </TooltipTrigger>
-              {!isExpanded && (
-                <TooltipContent side="right">
-                  <p>{item.label}</p>
-                </TooltipContent>
+          <Link key={item.id} href={item.href}>
+            <Button
+              variant={pathname === item.href ? "secondary" : "ghost"}
+              className={cn(
+                "w-full justify-center transition-all duration-200",
+                isExpanded 
+                  ? "px-4 justify-start gap-3 hover:bg-white/10 dark:hover:bg-gray-800/10" 
+                  : "px-2 hover:bg-white/20 dark:hover:bg-gray-800/20",
+                pathname === item.href && !isExpanded && "bg-white/30 dark:bg-gray-800/30"
               )}
-            </Tooltip>
-          </TooltipProvider>
+              role="menuitem"
+              aria-current={pathname === item.href ? "page" : undefined}
+            >
+              <div className={cn(
+                "relative flex items-center justify-center",
+                !isExpanded && "w-8 h-8 rounded-lg bg-white/10 dark:bg-gray-800/10 group-hover:bg-[#FF4F59]/10 transition-colors duration-200"
+              )}>
+                <item.icon className={cn(
+                  "h-4 w-4",
+                  !isExpanded && "text-[#FF4F59]",
+                  pathname === item.href && !isExpanded && "text-[#FF4F59]"
+                )} aria-hidden="true" />
+              </div>
+              {isExpanded && <span>{item.label}</span>}
+            </Button>
+          </Link>
         ))}
       </nav>
 
       {/* Sidebar Footer */}
-      <div className="p-4 border-t border-white/10 dark:border-gray-700/10">
-        <div className="flex items-center justify-between">
-          <Link href="/settings" className="flex items-center gap-2 group">
-            <div className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 group-hover:bg-[#FF4F59]/10 transition-colors">
-              <Settings className="h-5 w-5 group-hover:text-[#FF4F59] transition-colors" />
+      <div className="p-3 border-t border-white/10 dark:border-gray-700/10">
+        <div className={cn(
+          "flex items-center",
+          isExpanded ? "justify-between" : "justify-center gap-3"
+        )}>
+          <Link href="/settings" className={cn(
+            "flex items-center gap-2 group",
+            !isExpanded && "flex-col"
+          )}>
+            <div className={cn(
+              "rounded-lg bg-white/10 dark:bg-gray-800/10 group-hover:bg-[#FF4F59]/10 transition-colors",
+              isExpanded ? "p-2" : "w-8 h-8 flex items-center justify-center"
+            )}>
+              <Settings className={cn(
+                "group-hover:text-[#FF4F59] transition-colors",
+                isExpanded ? "h-5 w-5" : "h-4 w-4"
+              )} />
             </div>
             {isExpanded && (
               <div>
@@ -160,16 +171,35 @@ export default function Sidebar() {
               </div>
             )}
           </Link>
+
           {mounted && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               onKeyDown={(e) => handleKeyDown(e, () => setTheme(theme === "dark" ? "light" : "dark"))}
-              className="hover:bg-[#FF4F59]/10"
+              className={cn(
+                "hover:bg-[#FF4F59]/10 transition-colors",
+                !isExpanded && "w-8 h-8"
+              )}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <div className={cn(
+                "rounded-lg bg-white/10 dark:bg-gray-800/10 group-hover:bg-[#FF4F59]/10 transition-colors",
+                !isExpanded && "w-8 h-8 flex items-center justify-center"
+              )}>
+                {theme === "dark" ? (
+                  <Sun className={cn(
+                    "group-hover:text-[#FF4F59] transition-colors",
+                    isExpanded ? "h-5 w-5" : "h-4 w-4"
+                  )} />
+                ) : (
+                  <Moon className={cn(
+                    "group-hover:text-[#FF4F59] transition-colors",
+                    isExpanded ? "h-5 w-5" : "h-4 w-4"
+                  )} />
+                )}
+              </div>
             </Button>
           )}
         </div>
