@@ -1,0 +1,76 @@
+/* Custom Button Styles */
+.custom-button {
+  transition: all 300ms;
+}
+
+.custom-button:hover {
+  transform: scale(1.02);
+}
+
+.custom-button.default {
+  background: linear-gradient(to right, #FF4F59, #FFAD28);
+  color: white;
+}
+
+.custom-button.default:hover {
+  opacity: 0.9;
+}
+
+/* Custom Card Styles */
+.custom-card {
+  background: linear-gradient(to bottom right, rgba(255, 79, 89, 0.05), rgba(255, 173, 40, 0.05));
+  border: 1px solid rgba(255, 79, 89, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 300ms;
+}
+
+.custom-card:hover {
+  border-color: rgba(255, 79, 89, 0.4);
+  transform: scale(1.02);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-card-header {
+  border-bottom: 1px solid rgba(255, 79, 89, 0.2);
+}
+
+/* Chart Tooltip Styles */
+.chart-tooltip {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 79, 89, 0.2);
+}
+
+.chart-tooltip-label {
+  font-weight: 500;
+  color: #181C23;
+}
+
+.chart-tooltip-value {
+  font-size: 0.875rem;
+}
+
+/* Settings Page Styles */
+.settings-section {
+  display: none;
+}
+
+.settings-section.active {
+  display: block;
+}
+
+.settings-icon {
+  color: #FF4F59;
+}
+
+.settings-save-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .settings-save-button {
+  background-color: rgba(31, 41, 55, 0.1);
+  border-color: rgba(31, 41, 55, 0.1);
+} 

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 const settingsSections = [
   {
@@ -234,14 +235,17 @@ export default function SettingsPage() {
           {settingsSections.map((section) => (
             <div
               key={section.title}
-              className={`space-y-3 ${activeCategory === section.title ? 'block' : 'hidden'}`}
+              className={cn(
+                "settings-section",
+                activeCategory === section.title && "active"
+              )}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <section.icon className="h-4 w-4 text-[#FF4F59]" />
+                  <section.icon className="h-4 w-4 settings-icon" />
                   <h2 className="text-lg font-semibold">{section.title}</h2>
                 </div>
-                <Button variant="outline" size="sm" className="h-7 bg-white/10 dark:bg-gray-800/10 border-white/10 dark:border-gray-700/10">
+                <Button variant="outline" size="sm" className="h-7 settings-save-button">
                   <Save className="h-3.5 w-3.5 mr-1" />
                   Save Changes
                 </Button>

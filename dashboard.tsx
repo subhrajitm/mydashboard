@@ -143,10 +143,10 @@ const COLORS = {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white p-4 rounded-lg shadow-lg border border-[#FF4F59]/20">
-        <p className="font-medium text-[#181C23]">{label}</p>
+      <div className="chart-tooltip">
+        <p className="chart-tooltip-label">{label}</p>
         {payload.map((entry: any, index: number) => (
-          <p key={index} className="text-sm" style={{ color: entry.color }}>
+          <p key={index} className="chart-tooltip-value" style={{ color: entry.color }}>
             {entry.name}: {entry.value}
           </p>
         ))}

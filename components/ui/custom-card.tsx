@@ -21,12 +21,12 @@ export function CustomCard({
   return (
     <Card 
       className={cn(
-        "bg-gradient-to-br from-[#FF4F59]/5 to-[#FFAD28]/5 border border-[#FF4F59]/20 shadow-sm hover:border-[#FF4F59]/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-md",
+        "custom-card",
         className
       )}
     >
       {title && (
-        <CardHeader className={cn("border-b border-[#FF4F59]/20", headerClassName)}>
+        <CardHeader className={cn("custom-card-header", headerClassName)}>
           <CardTitle className="flex items-center gap-2">
             {icon}
             {title}

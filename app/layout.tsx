@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import './styles/components.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import Sidebar from "@/components/sidebar"
 import Header from "@/components/header"

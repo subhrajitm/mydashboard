@@ -30,8 +30,8 @@ export function CustomButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "transition-all duration-300 hover:scale-[1.02]",
-        variant === "default" && "bg-gradient-to-r from-[#FF4F59] to-[#FFAD28] text-white hover:opacity-90",
+        "custom-button",
+        variant === "default" && "default",
         className
       )}
     >
